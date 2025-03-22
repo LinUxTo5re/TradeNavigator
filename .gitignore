@@ -1,0 +1,6 @@
+venv/
+node_modules/
+.fake
+# Ignore build outputs
+**/bin/
+**/obj/

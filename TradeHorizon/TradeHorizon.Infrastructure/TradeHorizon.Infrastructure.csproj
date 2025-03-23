@@ -5,5 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
+    <ItemGroup>
+    <ProjectReference Include="..\TradeHorizon.Domain\TradeHorizon.Domain.csproj" />
+    <ProjectReference Include="..\TradeHorizon.Application\TradeHorizon.Application.csproj" />
+</ItemGroup>
 </Project>

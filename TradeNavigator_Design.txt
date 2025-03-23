@@ -1,0 +1,46 @@
+✅ **Final Tech Stack for Your Project:**  
+1️⃣ **ReactJS** → UI (ApexCharts for charts, API calls to backend)  
+2️⃣ **.NET Core API** → Backend (fetching crypto data, calculating indicators, handling WebSockets)  
+3️⃣ **Python (Future)** → Machine Learning (if implemented later)  
+----------------------------------------------------------------------------------------------------------
+📌 Data Types for Indicator/Strategy Building
+Data Type	REST API or WebSocket	Source (Gate.io or Coinalyze)
+OHLCV (Candlestick Data)	REST API	Gate.io ✅
+Live Price Data	WebSocket	Gate.io ✅
+Current Open Interest	REST API	Coinalyze ✅ (Aggregated)
+Open Interest History	REST API	Coinalyze ✅ (Aggregated)
+Current Funding Rate	REST API	Coinalyze ✅ (Aggregated)
+Predicted Funding Rate	REST API	Coinalyze ✅ (Aggregated)
+Funding Rate History	REST API	Coinalyze ✅ (Aggregated)
+Predicted Funding Rate History	REST API	Coinalyze ✅ (Aggregated)
+Liquidation History	REST API	Coinalyze ✅ (Aggregated)
+Long/Short Ratio History	REST API	Coinalyze ✅ (Aggregated)
+Live Order Book (Bids/Asks)	WebSocket	Gate.io ✅
+Trade History (Recent Trades)	WebSocket	Gate.io ✅
+----------------------------------------------------------------------------------------------------------
+Project Name: 🚀 TradeNavigator – The overall platform for crypto trading, strategies, and analysis.
+Backend: ⚙️ TradeHorizon – The core backend API handling indicators, data, and trading logic.
+Frontend: 💻 FuturesIQ – The UI where charts, strategies, and market data are visualized.
+ML Module: 🤖 AlphaMind – The future AI-powered analytics and predictive model component
+----------------------------------------------------------------------------------------------------------
+✅ DynamoDB Use Cases:
+1️⃣ User Strategies & Settings
+Selected indicators, thresholds, timeframes, risk levels
+Custom entry/exit rules for strategies
+2️⃣ Backtesting Configurations
+Strategy parameters used for historical testing
+Backtest results, success rate, PnL
+3️⃣ Custom Indicator Parameters
+Users modifying default formulas or settings
+----------------------------------------------------------------------------------------------------------
+TradeHorizon.API/          --> Presentation Layer (Controllers)
+TradeHorizon.Application/  --> Business Logic Layer (Service Layer) -> all business logic would be written here
+TradeHorizon.Infrastructure/ --> External API, WebSockets, DynamoDB (Implementation/Repository  Layer)
+TradeHorizon.Domain/       --> Entities, Models, Enums (Core Business Logic)
+TradeHorizon.Data/         --> Data Access Layer (DynamoDB Repository)
+----------------------------------------------------------------------------------------------------------
+ Why MVC?
+Model → Defined in Domain Layer (Entities, DTOs, Enums).
+View → Not applicable in the backend (handled by frontend- reactJS).
+Controller → Defined in API Layer (Controllers handling HTTP/WebSocket requests)
+----------------------------------------------------------------------------------------------------------

@@ -1,11 +1,10 @@
-using TradeHorizon.Application.Interfaces;
-using TradeHorizon.Application.Services;
-using TradeHorizon.Infrastructure.Repositories;
-
+using TradeHorizon.Business.Interfaces;
+using TradeHorizon.Business.Services;
+using TradeHorizon.DataAccess.Interfaces;
+using TradeHorizon.DataAccess.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();  // Add HTTP client for API calls
 builder.Services.AddScoped<ICoinalyzeRepository, CoinalyzeRepository>();

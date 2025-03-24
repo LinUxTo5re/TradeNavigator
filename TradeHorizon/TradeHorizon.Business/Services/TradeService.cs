@@ -1,7 +1,8 @@
-using TradeHorizon.Application.Interfaces;
+using TradeHorizon.Business.Interfaces;
 using TradeHorizon.Domain;
+using TradeHorizon.DataAccess.Interfaces;
 
-namespace TradeHorizon.Application.Services
+namespace TradeHorizon.Business.Services
 {
     public class TradeService : ITradeService
     {

@@ -1,8 +1,9 @@
 using TradeHorizon.Domain;
 
-namespace TradeHorizon.Application.Interfaces
+
+namespace TradeHorizon.DataAccess.Interfaces
 {
-    public interface ITradeService
+    public interface ICoinalyzeRepository
     {
         Task<List<OHLCVData>> GetOHLCVDataAsync(string symbol, string interval, long from, long to);
     }

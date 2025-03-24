@@ -39,7 +39,7 @@ TradeHorizon.Infrastructure/ --> External API, WebSockets, DynamoDB (Implementat
 TradeHorizon.Domain/       --> Entities, Models, Enums (Core Business Logic)
 TradeHorizon.Data/         --> Data Access Layer (DynamoDB Repository)
 ----------------------------------------------------------------------------------------------------------
- Why MVC?
+Why MVC?
 Model → Defined in Domain Layer (Entities, DTOs, Enums).
 View → Not applicable in the backend (handled by frontend- reactJS).
 Controller → Defined in API Layer (Controllers handling HTTP/WebSocket requests)

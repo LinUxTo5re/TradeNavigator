@@ -1,8 +1,8 @@
 using System.Text.Json;
-using TradeHorizon.Application.Interfaces;
 using TradeHorizon.Domain;
+using TradeHorizon.DataAccess.Interfaces;
 
-namespace TradeHorizon.Infrastructure.Repositories
+namespace TradeHorizon.DataAccess.Repositories
 {
     public class CoinalyzeRepository : ICoinalyzeRepository
     {

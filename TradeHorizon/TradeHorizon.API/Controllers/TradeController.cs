@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using TradeHorizon.Application.Interfaces;
+using TradeHorizon.Business.Interfaces;
 using TradeHorizon.Domain;
 
 namespace TradeHorizon.API.Controllers

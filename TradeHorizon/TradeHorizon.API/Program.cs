@@ -6,9 +6,9 @@ using TradeHorizon.DataAccess.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddHttpClient();  // Add HTTP client for API calls
+builder.Services.AddHttpClient(); 
 builder.Services.AddScoped<ICoinalyzeRepository, CoinalyzeRepository>();
-builder.Services.AddScoped<ITradeService, TradeService>();
+builder.Services.AddScoped<ICoinalyzeService, CoinalyzeService>();
 var app = builder.Build();
 
 app.UseRouting();

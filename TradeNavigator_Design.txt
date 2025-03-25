@@ -33,14 +33,34 @@ Backtest results, success rate, PnL
 3️⃣ Custom Indicator Parameters
 Users modifying default formulas or settings
 ----------------------------------------------------------------------------------------------------------
-TradeHorizon.API/          --> Presentation Layer (Controllers)
-TradeHorizon.Application/  --> Business Logic Layer (Service Layer) -> all business logic would be written here
-TradeHorizon.Infrastructure/ --> External API, WebSockets, DynamoDB (Implementation/Repository  Layer)
-TradeHorizon.Domain/       --> Entities, Models, Enums (Core Business Logic)
-TradeHorizon.Data/         --> Data Access Layer (DynamoDB Repository)
+Yes, that's the correct architecture! Here's how each layer's responsibility is structured:  
+### **Layer Responsibilities**  
+✅ **API (Controller Layer)**  
+- Exposes **endpoints** for external clients.  
+- Handles **request validation & response formatting**.  
+- Calls **Business Layer** for processing.  
+✅ **Business Layer**  
+- Contains the **core logic** (filtering, calculations, transformations).  
+- Serves as an **intermediary** between API & DataAccess layers.  
+- Ensures **data consistency** and applies **business rules**.  
+✅ **Data Access Layer**  
+- Handles **external API, WebSocket, and DynamoDB interactions**.  
+- Fetches, stores, or updates data as needed.  
+- No business logic—just **data retrieval/storage**.  
+### **Call Flow**  
+**API → Business → DataAccess → External Source (API/DB/WebSocket)**  
+This keeps concerns **separated**, making your application **scalable & maintainable**. 🚀
 ----------------------------------------------------------------------------------------------------------
 Why MVC?
 Model → Defined in Domain Layer (Entities, DTOs, Enums).
 View → Not applicable in the backend (handled by frontend- reactJS).
 Controller → Defined in API Layer (Controllers handling HTTP/WebSocket requests)
 ----------------------------------------------------------------------------------------------------------
+1️⃣ Query Parameters (?key=value) → Used for GET requests (filters, search).
+2️⃣ Body Parameters (JSON) → Used for POST, PUT, PATCH requests.
+3️⃣ Route Parameters (/{id}) → Used for DELETE & required IDs.
+4️⃣ Header Parameters (Authorization: Bearer <token>) → Used for JWT Authentication.
+🚀 This structure is the most commonly used in real-world .NET Core APIs!
+----------------------------------------------------------------------------------------------------------
+✔ Use Task<T> when an async method returns a value.
+✔ Use Task when an async method does NOT return a value.

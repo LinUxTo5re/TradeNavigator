@@ -94,5 +94,32 @@ namespace TradeHorizon.DataAccess.Repositories
                 return string.Empty;
             }
         }
+
+        // Get Liquidation history
+        public async Task<string> GetLiquidationHistoryAsync(string symbols, string interval, Int64 from, Int64 to, string convert_to_usd)
+        {
+            try
+            {
+                string liquidationHistoryUrl = $"{ApiConstants.CoinalyzeBaseUrl}{ApiConstants.LiquidationHistoryUrl}?symbols={symbols}&interval={interval}&from={from}&to={to}&convert_to_usd={convert_to_usd}";
+                return await GetResponseTextAsync(liquidationHistoryUrl);            }
+            catch(Exception)
+            {
+                return string.Empty;
+            }
+        }
+
+        // Get Long-Short ratio
+        public async Task<string> GetLongShortRatioHistoryAsync(string symbols, string interval, Int64 from, Int64 to)
+        {
+            try
+            {
+                string longShortRatioUrl = $"{ApiConstants.CoinalyzeBaseUrl}{ApiConstants.LongShortRationUrl}?symbols={symbols}&interval={interval}&from={from}&to={to}";
+                return await GetResponseTextAsync(longShortRatioUrl);
+            }
+            catch(Exception)
+            {
+                return string.Empty;
+            }
+        }
     }
 }

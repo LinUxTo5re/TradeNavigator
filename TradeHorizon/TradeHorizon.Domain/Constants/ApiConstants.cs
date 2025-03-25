@@ -11,5 +11,7 @@ namespace TradeHorizon.Domain.Constants
         public const string CurrentPredictedFundingRateUrl = "predicted-funding-rate";
         public const string HistoricalFundingRateUrl = "funding-rate-history";
         public const string HistoricalPredictedFundingRateUrl = "predicted-funding-rate-history";
+        public const string LiquidationHistoryUrl = "liquidation-history";
+        public const string LongShortRationUrl = "long-short-ratio-history";
     }
 }

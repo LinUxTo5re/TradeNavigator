@@ -10,5 +10,7 @@ namespace TradeHorizon.DataAccess.Interfaces
         Task<string> GetCurrentFundingRateAsync(string symbols, bool isPredicted);
         Task<string> GetHistoricalFundingRateAsync(string symbols, string interval, Int64 from, Int64 to, bool isPredicted);
         Task<string> GetResponseTextAsync(string url);
+        Task<string> GetLiquidationHistoryAsync(string symbols, string interval, Int64 from, Int64 to, string convert_to_usd);
+        Task<string> GetLongShortRatioHistoryAsync(string symbols, string interval, Int64 from, Int64 to);
     }
 }

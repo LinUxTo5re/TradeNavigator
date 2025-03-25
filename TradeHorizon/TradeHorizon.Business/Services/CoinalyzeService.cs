@@ -108,5 +108,46 @@ namespace TradeHorizon.Business.Services
                 return new List<OHLCVData>();
             }
         }
+
+        // Get Liquidation History
+        public async Task<List<LiquidationHistory>> GetLiquidationHistoryAsync(string symbols, string interval, Int64 from, Int64 to, string convert_to_usd)
+        {
+            try
+            {
+                var liquidationHistoryText = await _coinalyzeRepository.GetLiquidationHistoryAsync(symbols, interval, from, to, convert_to_usd);
+                if (string.IsNullOrEmpty(liquidationHistoryText))
+                    return new List<LiquidationHistory>();
+                var liquidationHistoryList = JsonSerializer.Deserialize<List<LiquidationHistory>>(liquidationHistoryText, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+                return liquidationHistoryList ?? new List<LiquidationHistory>();
+            }
+            catch(Exception)
+            {
+                return new List<LiquidationHistory>();
+            }
+        }
+
+        // Get Long-Short Ration
+        public async Task<List<LiquidationHistory>> GetLongShortRatioHistoryAsync(string symbols, string interval, Int64 from, Int64 to)
+        {
+            try
+            {
+                var longShortRatioText = await _coinalyzeRepository.GetLongShortRatioHistoryAsync(symbols, interval, from, to);
+                if (string.IsNullOrEmpty(longShortRatioText))
+                    return new List<LiquidationHistory>();
+                var longShortRatioList = JsonSerializer.Deserialize<List<LiquidationHistory>>(longShortRatioText, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+                return longShortRatioList ?? new List<LiquidationHistory>();
+            }
+            catch(Exception)
+            {
+                return new List<LiquidationHistory>();
+            }
+        }
+
     }
 }

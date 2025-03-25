@@ -95,5 +95,45 @@ namespace TradeHorizon.API.Controllers
                 return StatusCode(500, new { message = "An unexpected error occurred.", error = ex.Message });
             }
         }
+
+        [HttpGet("liquidation-history")]
+        public async Task<IActionResult> GetLiquidationHistoryAsync([FromQuery] string symbols, [FromQuery] string interval, [FromQuery] Int64 from, [FromQuery] Int64 to, [FromQuery] string convert_to_usd="false")
+        {
+            try
+            {
+                var liquidationHistory = await _coinalyzeService.GetLiquidationHistoryAsync(symbols, interval, from, to, convert_to_usd);
+                if(liquidationHistory == null || liquidationHistory.Count == 0)
+                    return NotFound(new { message = "No data available for the symbols."});   
+               return Ok(liquidationHistory); 
+            }
+            catch (HttpRequestException ex)
+            {
+                return StatusCode(502, new { message = "Failed to fetch data from external service.", error = ex.Message });
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", error = ex.Message });
+            }
+        }
+
+        [HttpGet("long-short-ratio-history")]
+        public async Task<IActionResult> GetLongShortRatioHistoryAsync([FromQuery] string symbols, [FromQuery] string interval, [FromQuery] Int64 from, [FromQuery] Int64 to)
+        {
+            try
+            {
+                var longShortRatio = await _coinalyzeService.GetLongShortRatioHistoryAsync(symbols, interval, from, to);
+                if(longShortRatio == null || longShortRatio.Count == 0)
+                    return NotFound(new { message = "No data available for the symbols."});
+                return Ok(longShortRatio);
+            }
+            catch (HttpRequestException ex)
+            {
+                return StatusCode(502, new { message = "Failed to fetch data from external service.", error = ex.Message });
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", error = ex.Message });
+            }
+        }
     }
 }

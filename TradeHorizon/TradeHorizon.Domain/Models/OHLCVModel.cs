@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-public class OHLCVTgateIoData
+public class OHLCVModel
 {
     [JsonPropertyName("o")]
     public string? OpenPrice { get; set; }

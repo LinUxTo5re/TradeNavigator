@@ -4,19 +4,13 @@
 3️⃣ **Python (Future)** → Machine Learning (if implemented later)  
 ----------------------------------------------------------------------------------------------------------
 📌 Data Types for Indicator/Strategy Building
-Data Type	REST API or WebSocket	Source (Gate.io or Coinalyze)
-OHLCV (Candlestick Data)	REST API	Gate.io ✅
-Live Price Data	WebSocket	Gate.io ✅
-Current Open Interest	REST API	Coinalyze ✅ (Aggregated)
-Open Interest History	REST API	Coinalyze ✅ (Aggregated)
-Current Funding Rate	REST API	Coinalyze ✅ (Aggregated)
-Predicted Funding Rate	REST API	Coinalyze ✅ (Aggregated)
-Funding Rate History	REST API	Coinalyze ✅ (Aggregated)
-Predicted Funding Rate History	REST API	Coinalyze ✅ (Aggregated)
-Liquidation History	REST API	Coinalyze ✅ (Aggregated)
-Long/Short Ratio History	REST API	Coinalyze ✅ (Aggregated)
-Live Order Book (Bids/Asks)	WebSocket	Gate.io ✅
-Trade History (Recent Trades)	WebSocket	Gate.io ✅
+Data Type	Source	Approach
+Open Interest	REST + WS	Fetch historical OI via REST and merge with live OI from WS for real-time tracking.
+Funding Rate	REST + WS	Fetch funding rate history via REST and get live funding rate via WS for accurate trading costs.
+Liquidation	REST + WS	Use REST for liquidation history and WS for live liquidation events to monitor market moves.
+Long/Short Ratio	REST + WS	Fetch historical sentiment via REST and use WS for real-time market positioning insights.
+OHLCV (Candlestick Data)	REST + WS	Use REST for historical data and WS for live updates to keep charts up to date.
+Trade Book (Optional)	WS	Stream real-time trade book via WS for advanced market depth analysis.
 ----------------------------------------------------------------------------------------------------------
 Project Name: 🚀 TradeNavigator – The overall platform for crypto trading, strategies, and analysis.
 Backend: ⚙️ TradeHorizon – The core backend API handling indicators, data, and trading logic.
@@ -64,3 +58,24 @@ Controller → Defined in API Layer (Controllers handling HTTP/WebSocket request
 ----------------------------------------------------------------------------------------------------------
 ✔ Use Task<T> when an async method returns a value.
 ✔ Use Task when an async method does NOT return a value.
+----------------------------------------------------------------------------------------------------------
+Here’s the **final comprehensive list** of factors:  
+### **📌 Final List of Factors for Futures Market Analysis**  
+#### **✅ Existing Factors (Directly Available from API)**  
+Open Interest History  
+Funding Rate History  
+Liquidation History  
+Long/Short Ratio History  
+OHLCV (Candlestick) History  
+Order Book Data  
+#### **🔹 Derived Factors (Calculated from API Data)**  
+Estimated Leverage Ratio (ELR)  
+Whale Activity Index
+Funding Rate Spread  
+Bid-Ask Spread  
+Order Book Imbalance Ratio  
+Liquidation Delta  
+Funding Rate Volatility  
+Volume-Weighted Average Price (VWAP)  
+OI Delta % (Open Interest Change)  
+----------------------------------------------------------------------------------------------------------

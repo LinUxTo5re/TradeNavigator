@@ -16,4 +16,5 @@ public class LiquidationOrderModel
     public string? LiquidationFillPrice { get; set; }
     [JsonPropertyName("left")]
     public Int64? LeftLiquidationSize { get; set; }
+    public ApiError? ApiErrors { get; set; }
 }

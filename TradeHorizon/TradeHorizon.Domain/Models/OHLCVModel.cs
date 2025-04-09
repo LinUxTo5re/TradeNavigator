@@ -16,4 +16,5 @@ public class OHLCVModel
     public Double? UnixTimeStamp { get; set; }
     [JsonPropertyName("sum")]
     public string? Sum { get; set; }
+    public ApiError? ApiErrors {get; set;}
 }

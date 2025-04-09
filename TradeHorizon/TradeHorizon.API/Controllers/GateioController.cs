@@ -2,6 +2,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using TradeHorizon.Business.Interfaces;
 using TradeHorizon.Domain;
+using TradeHorizon.Domain.Constants;
 
 namespace TradeHorizon.API.Controllers
 {
@@ -23,12 +24,14 @@ namespace TradeHorizon.API.Controllers
             {
                 List<OHLCVModel> historicalOHLCV = await _gateioService.GetOHLCVHistAsync(contract, from, to, limit, interval);
                 if(historicalOHLCV == null || historicalOHLCV.Count == 0)
-                    return NotFound(new { message = "No data available for the symbols." });
+                    return NotFound(new { message = VarConstants.DataNotAvailMsg });
+                
+                var errorMessage = historicalOHLCV.FirstOrDefault(x => x.ApiErrors != null && !string.IsNullOrEmpty(x.ApiErrors.Error))?.ApiErrors?.Error;
+
+                if (!string.IsNullOrEmpty(errorMessage))
+                    return StatusCode(422, new { message = errorMessage });
+                    
                 return Ok(historicalOHLCV);
-            }
-            catch (HttpRequestException ex)
-            {
-                return StatusCode(502, new { message = "Failed to fetch data from external service.", error = ex.Message });
             }
             catch(Exception ex)
             {
@@ -43,12 +46,14 @@ namespace TradeHorizon.API.Controllers
             {
                 List<FundingRateModel> historicalFundingRate = await _gateioService.GetFundingRateHistAsync(contract, from, to, limit);
                 if(historicalFundingRate == null || historicalFundingRate.Count == 0)
-                    return NotFound(new { message = "No data available for the symbols." });
+                    return NotFound(new { message = VarConstants.DataNotAvailMsg });
+                
+                var errorMessage = historicalFundingRate.FirstOrDefault(x => x.ApiErrors != null && !string.IsNullOrEmpty(x.ApiErrors.Error))?.ApiErrors?.Error;
+
+                if (!string.IsNullOrEmpty(errorMessage))
+                    return StatusCode(422, new { message = errorMessage });
+
                 return Ok(historicalFundingRate);
-            }
-            catch (HttpRequestException ex)
-            {
-                return StatusCode(502, new { message = "Failed to fetch data from external service.", error = ex.Message });
             }
             catch(Exception ex)
             {
@@ -63,12 +68,14 @@ namespace TradeHorizon.API.Controllers
             {
                 List<ContractStatsModel> historicalContractStats = await _gateioService.GetContractStatsAsync(contract,from,interval, limit);
                 if(historicalContractStats == null || historicalContractStats.Count == 0)
-                    return NotFound(new { message = "No data available for the symbols." });
+                    return NotFound(new { message = VarConstants.DataNotAvailMsg });
+                
+                var errorMessage = historicalContractStats.FirstOrDefault(x => x.ApiErrors != null && !string.IsNullOrEmpty(x.ApiErrors.Error))?.ApiErrors?.Error;
+
+                if(!string.IsNullOrEmpty(errorMessage))
+                    return StatusCode(422, new { message = errorMessage });
+
                 return Ok(historicalContractStats);
-            }
-            catch (HttpRequestException ex)
-            {
-                return StatusCode(502, new { message = "Failed to fetch data from external service.", error = ex.Message });
             }
             catch(Exception ex)
             {
@@ -83,12 +90,14 @@ namespace TradeHorizon.API.Controllers
             {
                 OrderBookModel orderBookList = await _gateioService.GetOrderBookAsync(contract, interval, limit, with_id);
                 if(orderBookList == null || (orderBookList.Asks?.Count == 0 && orderBookList.Bids?.Count == 0))
-                    return NotFound(new { message = "No data available for the symbols." });
+                    return NotFound(new { message = VarConstants.DataNotAvailMsg });
+
+                var errorMessage = orderBookList?.ApiErrors?.Error;
+
+                if(!string.IsNullOrEmpty(errorMessage))
+                    return StatusCode(422, new {message = errorMessage});
+
                 return Ok(orderBookList);
-            }
-            catch (HttpRequestException ex)
-            {
-                return StatusCode(502, new { message = "Failed to fetch data from external service.", error = ex.Message });
             }
             catch(Exception ex)
             {
@@ -103,12 +112,14 @@ namespace TradeHorizon.API.Controllers
             {
                 List<LiquidationOrderModel> liqOrdersList = await _gateioService.GetLiqOrdersAsync(contract, from, to, limit);
                 if(liqOrdersList == null || liqOrdersList.Count == 0)
-                    return NotFound(new { message = "No data available for the symbols." });
+                    return NotFound(new { message = VarConstants.DataNotAvailMsg });
+                
+                var errorMessage = liqOrdersList.FirstOrDefault(x => x.ApiErrors != null && !string.IsNullOrEmpty(x.ApiErrors.Error))?.ApiErrors?.Error;
+
+                if(!string.IsNullOrEmpty(errorMessage))
+                    return StatusCode(422, new {message = errorMessage});
+
                 return Ok(liqOrdersList);
-            }
-            catch (HttpRequestException ex)
-            {
-                return StatusCode(502, new { message = "Failed to fetch data from external service.", error = ex.Message });
             }
             catch(Exception ex)
             {

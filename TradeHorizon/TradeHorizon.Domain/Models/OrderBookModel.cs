@@ -12,6 +12,7 @@ public class OrderBookModel
     public List<AsksBidsList>? Bids { get; set; }
     [JsonPropertyName("asks")]
     public List<AsksBidsList>? Asks { get; set; }
+    public ApiError? ApiErrors { get; set; }
 }
 
 public class AsksBidsList

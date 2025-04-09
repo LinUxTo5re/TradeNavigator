@@ -46,4 +46,5 @@ public class ContractStatsModel
     public int? LongUsersNumber { get; set; }
     [JsonPropertyName("short_users")]
     public int? ShortUsersNumber { get; set; }
+    public ApiError? ApiErrors { get; set; }
 }

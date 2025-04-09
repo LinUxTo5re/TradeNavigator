@@ -5,4 +5,6 @@ public class FundingRateModel
     [JsonPropertyName("r")]
     public string? FundingRate { get; set; }
     [JsonPropertyName("t")]
-    public Double? UnixTimeStamp { get; set; }}
+    public Double? UnixTimeStamp { get; set; }
+    public ApiError? ApiErrors { get; set; }
+}

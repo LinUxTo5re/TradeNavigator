@@ -1,9 +1,7 @@
-using System.Text.Json;
-using TradeHorizon.Domain;
-using TradeHorizon.DataAccess.Interfaces;
+using TradeHorizon.DataAccess.Interfaces.RestAPI;
 using TradeHorizon.Domain.Constants;
 
-namespace TradeHorizon.DataAccess.Repositories
+namespace TradeHorizon.DataAccess.Repositories.RestAPI
 {
     public class GateioRepository: IGateioRepository
     {

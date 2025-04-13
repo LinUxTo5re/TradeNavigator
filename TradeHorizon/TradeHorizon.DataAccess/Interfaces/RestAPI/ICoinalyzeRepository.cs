@@ -1,7 +1,5 @@
-using TradeHorizon.Domain;
 
-
-namespace TradeHorizon.DataAccess.Interfaces
+namespace TradeHorizon.DataAccess.Interfaces.RestAPI
 {
     public interface ICoinalyzeRepository
     {

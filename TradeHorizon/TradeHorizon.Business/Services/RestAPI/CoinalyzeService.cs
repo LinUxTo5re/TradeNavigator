@@ -1,9 +1,8 @@
-using TradeHorizon.Business.Interfaces;
-using TradeHorizon.Domain;
-using TradeHorizon.DataAccess.Interfaces;
+using TradeHorizon.Business.Interfaces.RestAPI;
+using TradeHorizon.DataAccess.Interfaces.RestAPI;
 using System.Text.Json;
 
-namespace TradeHorizon.Business.Services
+namespace TradeHorizon.Business.Services.RestAPI
 {
     public class CoinalyzeService : ICoinalyzeService
     {

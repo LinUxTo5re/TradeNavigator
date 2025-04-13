@@ -1,7 +1,5 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
-using TradeHorizon.Business.Interfaces;
-using TradeHorizon.Domain;
+using TradeHorizon.Business.Interfaces.RestAPI;
 using TradeHorizon.Domain.Constants;
 
 namespace TradeHorizon.API.Controllers

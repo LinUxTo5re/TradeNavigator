@@ -79,3 +79,31 @@ Funding Rate Volatility
 Volume-Weighted Average Price (VWAP)  
 OI Delta % (Open Interest Change)  
 ----------------------------------------------------------------------------------------------------------
+✅ Use DAL (Data Access Layer) when:
+You are consuming or connecting to a third-party WebSocket.
+You're handling low-level details like:
+Opening the WebSocket connection.
+Sending subscription messages.
+Receiving raw JSON or binary payloads.
+Think of it like:
+“Go out and fetch the data, don’t ask what it’s for.”
+✅ Use Business Layer when:
+You need to process, transform, or broadcast that data.
+You're creating your own WebSocket endpoints (using SignalR Hubs).
+You want to bridge the third-party data to your own system (i.e., broadcasting it to frontend clients).
+Think of it like:
+“I’ve got the data. Now let’s do something meaningful with it.”
+✅ Use API Layer when:
+You need to expose your ws to client
+----------------------------------------------------------------------------------------------------------
+✅ Correct Architecture Flow
+[API Layer]
+    ↓
+[Business Layer]
+    ↓
+[Data Access Layer]
+
+API calls Business
+Business calls DAL
+DAL only deals with low-level operations like external APIs or DB access.
+----------------------------------------------------------------------------------------------------------

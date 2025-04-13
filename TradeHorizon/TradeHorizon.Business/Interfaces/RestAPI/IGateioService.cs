@@ -1,6 +1,5 @@
-using TradeHorizon.Domain;
 
-namespace TradeHorizon.Business.Interfaces
+namespace TradeHorizon.Business.Interfaces.RestAPI
 {
     public interface IGateioService
     {

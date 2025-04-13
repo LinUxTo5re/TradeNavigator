@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SignalR WebSocket Client</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+</head>
+<body>
+    <h2>SignalR WebSocket Client</h2>
+
+    <button onclick="connect()">Connect</button>
+    <button onclick="subscribe()">Subscribe</button>
+    <button onclick="unsubscribe()">Unsubscribe</button>
+
+    <pre id="log"></pre>
+
+    <script>
+        let connection;
+
+        function log(message) {
+            document.getElementById("log").textContent += message + "\n";
+        }
+
+        async function connect() {
+            connection = new signalR.HubConnectionBuilder()
+                .withUrl("https://localhost:7001/ws/gate-ticker") // Your WS endpoint
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+
+            connection.on("ProcessedGateTickerData", message => {
+                log("Received: " + message);
+            });
+
+            try {
+                await connection.start();
+                log("Connected to SignalR Hub");
+            } catch (err) {
+                console.error(err);
+                log("Connection failed: " + err.toString());
+            }
+        }
+
+        async function subscribe() {
+            const message = {
+                time: 123456,
+                channel: "futures.order_book",
+                event: "subscribe",
+                payload: ["BTC_USDT", "20", "0"]
+            };
+
+            try {
+                await connection.invoke("Subscribe", JSON.stringify(message));
+                log("Subscribed to BTC_USDT");
+            } catch (err) {
+                console.error(err);
+                log("Subscribe failed: " + err.toString());
+            }
+        }
+
+        async function unsubscribe() {
+            try {
+                await connection.invoke("Unsubscribe", "BTC_USDT");
+                log("Unsubscribed from BTC_USDT");
+            } catch (err) {
+                console.error(err);
+                log("Unsubscribe failed: " + err.toString());
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,9 +1,9 @@
-using TradeHorizon.Business.Interfaces;
-using TradeHorizon.DataAccess.Interfaces;
+using TradeHorizon.Business.Interfaces.RestAPI;
+using TradeHorizon.DataAccess.Interfaces.RestAPI;
 using System.Text.Json;
 using TradeHorizon.Domain.Constants;
 
-namespace TradeHorizon.Business.Services
+namespace TradeHorizon.Business.Services.RestAPI
 {
     public class GateioService : IGateioService
     {

@@ -17,4 +17,5 @@ namespace TradeHorizon.API.Hubs.Broadcaster
             return _hubContext.Clients.Group(groupName).SendAsync(eventName, message);
         }
     }
+
 }

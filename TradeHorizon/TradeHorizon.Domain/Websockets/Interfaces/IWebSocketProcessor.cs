@@ -1,7 +1,6 @@
-// Domain/Websockets/Interfaces/IGateTickerProcessor.cs
 namespace TradeHorizon.Domain.Websockets.Interfaces
 {
-    public interface IGateTickerProcessor
+    public interface IWebSocketProcessor
     {
         Task ProcessAsync(string rawMessage);
     }

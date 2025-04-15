@@ -5,52 +5,74 @@ using TradeHorizon.DataAccess.Repositories.RestAPI;
 using TradeHorizon.API.Hubs;
 using TradeHorizon.DataAccess.Repositories.Websocket;
 using TradeHorizon.Domain.Websockets.Interfaces;
-using TradeHorizon.API.Hubs.Broadcaster;
+using TradeHorizon.Business.Services.Websocket;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddHttpClient(); 
+builder.Services.AddHttpClient();
 builder.Services.AddSignalR();
 
-// register the dependency injection (DI) container.
-#region  DI container REST
+#region DI container REST
 builder.Services.AddScoped<ICoinalyzeRepository, CoinalyzeRepository>();
 builder.Services.AddScoped<ICoinalyzeService, CoinalyzeService>();
 builder.Services.AddScoped<IGateioRepository, GateioRepository>();
 builder.Services.AddScoped<IGateioService, GateioService>();
 #endregion
 
-#region DI container WS
-// WebSocket Broadcaster (API layer)
-builder.Services.AddSingleton<ISignalRBroadcaster, SignalRBroadcaster<GateTickerHub>>();
-builder.Services.AddSingleton<IGateTickerProcessor, GateTickerService>();
-builder.Services.AddSingleton<IGateTickerClient, GateioTickerClient>();
+#region DI container WS - Gate Ticker
+builder.Services.AddSingleton<IGateTickerBroadcaster, GateTickerBroadcaster>();  // Broadcaster
+builder.Services.AddSingleton<IGateTickerProcessor, GateTickerService>(); 
+
+#region DI container WS - Gate Trades
+builder.Services.AddSingleton<IGateTradesBroadcaster, GateTradeBroadcaster>();  // Broadcaster
+builder.Services.AddSingleton<IGateTradesProcessor, GateTradesService>();
+
+builder.Services.AddSingleton<IGateTickerClient>(provider =>
+    new GateTickerClient(
+        provider.GetRequiredService<IGateTickerProcessor>(),
+        new GateWebSocketClient(
+            provider.GetRequiredService<IGateTickerProcessor>(),
+            "wss://fx-ws.gateio.ws/v4/ws/usdt"
+        ),
+        "wss://fx-ws.gateio.ws/v4/ws/usdt"
+    ));
 #endregion
 
-#region start third party ws on start-up
-//builder.Services.AddHostedService<GateioTickerClient>();
+builder.Services.AddSingleton<IGateTradesClient>(provider =>
+    new GateTradeClient(
+        provider.GetRequiredService<IGateTradesProcessor>(),
+        new GateWebSocketClient(
+            provider.GetRequiredService<IGateTradesProcessor>(),
+            "wss://fx-ws.gateio.ws/v4/ws/usdt"
+        ),
+        "wss://fx-ws.gateio.ws/v4/ws/usdt"
+    ));
+
 #endregion
 
+#region CORS
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
-        builder =>
+        policy =>
         {
-            builder
-                .WithOrigins("http://localhost:8000") // <-- match the origin of your HTML page
+            policy.WithOrigins("http://localhost:8000")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
-                .AllowCredentials(); // <-- needed if SignalR is sending cookies/etc.
+                .AllowCredentials();
         });
 });
+#endregion
+
 var app = builder.Build();
 
 app.MapHub<GateTickerHub>("/ws/gate-ticker");
-app.UseCors(MyAllowSpecificOrigins);
+app.MapHub<GateTradesHub>("/ws/gate-trades");
 
+app.UseCors(MyAllowSpecificOrigins);
 app.UseRouting();
 app.UseAuthorization();
 app.MapControllers();

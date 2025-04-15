@@ -1,18 +1,20 @@
 using TradeHorizon.Domain.Websockets.Interfaces;
 
-public class GateTickerService : IGateTickerProcessor
+namespace TradeHorizon.Business.Services.Websocket
 {
-    private readonly ISignalRBroadcaster _broadcaster;
-
-    public GateTickerService(ISignalRBroadcaster broadcaster)
+    public class GateTickerService : IGateTickerProcessor
     {
-        _broadcaster = broadcaster;
-    }
+        private readonly IGateTickerBroadcaster _broadcaster;
 
-    public async Task ProcessAsync(string rawMessage)
-    {
-        var processed = $"[PROCESSED] {rawMessage}";
-        // Broadcast to API group
-        await _broadcaster.BroadcastToGroupAsync("ProcessedGateTickerGroup","ProcessedGateTickerData", processed);
+        public GateTickerService(IGateTickerBroadcaster broadcaster)
+        {
+            _broadcaster = broadcaster;
+        }
+
+        public async Task ProcessAsync(string rawMessage)
+        {
+            var processed = $"[PROCESSED] {rawMessage}";
+            await _broadcaster.BroadcastToGroupAsync("ProcessedGateTickerGroup", "ProcessedGateTickerData", processed);
+        }
     }
 }

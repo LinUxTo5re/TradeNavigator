@@ -15,7 +15,7 @@
 
     <script>
         let connection;
-        const groupName = "ProcessedGateTradesGroup"; // must match backend group used in broadcasting
+        const groupName = "ProcessedGateTickerGroup"; // must match backend group used in broadcasting
 
         function log(message) {
             document.getElementById("log").textContent += message + "\n";
@@ -23,11 +23,11 @@
 
         async function connect() {
             connection = new signalR.HubConnectionBuilder()
-                .withUrl("https://localhost:7001/ws/gate-trades") // replace port if different
+                .withUrl("https://localhost:7001/ws/gate-ticker") // replace port if different
                 .configureLogging(signalR.LogLevel.Information)
                 .build();
 
-            connection.on("ProcessedGateTradesData", message => {
+            connection.on("ProcessedGateTickerData", message => {
                 log("Received: " + message);
             });
 
@@ -43,7 +43,7 @@
         async function subscribe() {
             const message = {
                 time: Date.now(),
-                channel: "futures.trades",
+                channel: "futures.tickers",
                 event: "subscribe",
                 payload: ["BTC_USDT"]
             };

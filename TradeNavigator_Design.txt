@@ -4,19 +4,13 @@
 3️⃣ **Python (Future)** → Machine Learning (if implemented later)  
 ----------------------------------------------------------------------------------------------------------
 📌 Data Types for Indicator/Strategy Building
-Data Type	REST API or WebSocket	Source (Gate.io or Coinalyze)
-OHLCV (Candlestick Data)	REST API	Gate.io ✅
-Live Price Data	WebSocket	Gate.io ✅
-Current Open Interest	REST API	Coinalyze ✅ (Aggregated)
-Open Interest History	REST API	Coinalyze ✅ (Aggregated)
-Current Funding Rate	REST API	Coinalyze ✅ (Aggregated)
-Predicted Funding Rate	REST API	Coinalyze ✅ (Aggregated)
-Funding Rate History	REST API	Coinalyze ✅ (Aggregated)
-Predicted Funding Rate History	REST API	Coinalyze ✅ (Aggregated)
-Liquidation History	REST API	Coinalyze ✅ (Aggregated)
-Long/Short Ratio History	REST API	Coinalyze ✅ (Aggregated)
-Live Order Book (Bids/Asks)	WebSocket	Gate.io ✅
-Trade History (Recent Trades)	WebSocket	Gate.io ✅
+Data Type	Source	Approach
+Open Interest	REST + WS	Fetch historical OI via REST and merge with live OI from WS for real-time tracking.
+Funding Rate	REST + WS	Fetch funding rate history via REST and get live funding rate via WS for accurate trading costs.
+Liquidation	REST + WS	Use REST for liquidation history and WS for live liquidation events to monitor market moves.
+Long/Short Ratio	REST + WS	Fetch historical sentiment via REST and use WS for real-time market positioning insights.
+OHLCV (Candlestick Data)	REST + WS	Use REST for historical data and WS for live updates to keep charts up to date.
+Trade Book (Optional)	WS	Stream real-time trade book via WS for advanced market depth analysis.
 ----------------------------------------------------------------------------------------------------------
 Project Name: 🚀 TradeNavigator – The overall platform for crypto trading, strategies, and analysis.
 Backend: ⚙️ TradeHorizon – The core backend API handling indicators, data, and trading logic.
@@ -33,14 +27,83 @@ Backtest results, success rate, PnL
 3️⃣ Custom Indicator Parameters
 Users modifying default formulas or settings
 ----------------------------------------------------------------------------------------------------------
-TradeHorizon.API/          --> Presentation Layer (Controllers)
-TradeHorizon.Application/  --> Business Logic Layer (Service Layer) -> all business logic would be written here
-TradeHorizon.Infrastructure/ --> External API, WebSockets, DynamoDB (Implementation/Repository  Layer)
-TradeHorizon.Domain/       --> Entities, Models, Enums (Core Business Logic)
-TradeHorizon.Data/         --> Data Access Layer (DynamoDB Repository)
+Yes, that's the correct architecture! Here's how each layer's responsibility is structured:  
+### **Layer Responsibilities**  
+✅ **API (Controller Layer)**  
+- Exposes **endpoints** for external clients.  
+- Handles **request validation & response formatting**.  
+- Calls **Business Layer** for processing.  
+✅ **Business Layer**  
+- Contains the **core logic** (filtering, calculations, transformations).  
+- Serves as an **intermediary** between API & DataAccess layers.  
+- Ensures **data consistency** and applies **business rules**.  
+✅ **Data Access Layer**  
+- Handles **external API, WebSocket, and DynamoDB interactions**.  
+- Fetches, stores, or updates data as needed.  
+- No business logic—just **data retrieval/storage**.  
+### **Call Flow**  
+**API → Business → DataAccess → External Source (API/DB/WebSocket)**  
+This keeps concerns **separated**, making your application **scalable & maintainable**. 🚀
 ----------------------------------------------------------------------------------------------------------
 Why MVC?
 Model → Defined in Domain Layer (Entities, DTOs, Enums).
 View → Not applicable in the backend (handled by frontend- reactJS).
 Controller → Defined in API Layer (Controllers handling HTTP/WebSocket requests)
+----------------------------------------------------------------------------------------------------------
+1️⃣ Query Parameters (?key=value) → Used for GET requests (filters, search).
+2️⃣ Body Parameters (JSON) → Used for POST, PUT, PATCH requests.
+3️⃣ Route Parameters (/{id}) → Used for DELETE & required IDs.
+4️⃣ Header Parameters (Authorization: Bearer <token>) → Used for JWT Authentication.
+🚀 This structure is the most commonly used in real-world .NET Core APIs!
+----------------------------------------------------------------------------------------------------------
+✔ Use Task<T> when an async method returns a value.
+✔ Use Task when an async method does NOT return a value.
+----------------------------------------------------------------------------------------------------------
+Here’s the **final comprehensive list** of factors:  
+### **📌 Final List of Factors for Futures Market Analysis**  
+#### **✅ Existing Factors (Directly Available from API)**  
+Open Interest History  
+Funding Rate History  
+Liquidation History  
+Long/Short Ratio History  
+OHLCV (Candlestick) History  
+Order Book Data  
+#### **🔹 Derived Factors (Calculated from API Data)**  
+Estimated Leverage Ratio (ELR)  
+Whale Activity Index
+Funding Rate Spread  
+Bid-Ask Spread  
+Order Book Imbalance Ratio  
+Liquidation Delta  
+Funding Rate Volatility  
+Volume-Weighted Average Price (VWAP)  
+OI Delta % (Open Interest Change)  
+----------------------------------------------------------------------------------------------------------
+✅ Use DAL (Data Access Layer) when:
+You are consuming or connecting to a third-party WebSocket.
+You're handling low-level details like:
+Opening the WebSocket connection.
+Sending subscription messages.
+Receiving raw JSON or binary payloads.
+Think of it like:
+“Go out and fetch the data, don’t ask what it’s for.”
+✅ Use Business Layer when:
+You need to process, transform, or broadcast that data.
+You're creating your own WebSocket endpoints (using SignalR Hubs).
+You want to bridge the third-party data to your own system (i.e., broadcasting it to frontend clients).
+Think of it like:
+“I’ve got the data. Now let’s do something meaningful with it.”
+✅ Use API Layer when:
+You need to expose your ws to client
+----------------------------------------------------------------------------------------------------------
+✅ Correct Architecture Flow
+[API Layer]
+    ↓
+[Business Layer]
+    ↓
+[Data Access Layer]
+
+API calls Business
+Business calls DAL
+DAL only deals with low-level operations like external APIs or DB access.
 ----------------------------------------------------------------------------------------------------------

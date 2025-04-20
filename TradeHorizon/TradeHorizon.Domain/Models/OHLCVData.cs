@@ -1,11 +1,26 @@
-﻿namespace TradeHorizon.Domain;
+using System.Text.Json.Serialization;
 
 public class OHLCVData
 {
-        public long Timestamp { get; set; }
-        public decimal Open { get; set; } 
-        public decimal High { get; set; } 
-        public decimal Low { get; set; } 
-        public decimal Close { get; set; } 
-        public decimal Volume { get; set; }
+    [JsonPropertyName("history")]
+    public List<OHLCVTData>? oHLCVDatas { get; set; }
+    [JsonPropertyName("symbol")]
+    public string? Symbol { get; set; }
 }
+
+public class OHLCVTData
+{
+    [JsonPropertyName("o")]
+    public decimal? OpenPrice { get; set; }
+    [JsonPropertyName("h")]
+    public decimal? HighPrice { get; set; }
+    [JsonPropertyName("l")]
+    public decimal? LowPrice { get; set; }
+    [JsonPropertyName("c")]
+    public decimal? ClosePrice { get; set; }
+    [JsonPropertyName("v")]
+    public decimal? Volume { get; set; }
+    [JsonPropertyName("t")]
+    public long? UnixTimeStamp { get; set; }
+}
+

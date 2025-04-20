@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SignalR WebSocket Client</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+</head>
+<body>
+    <h2>SignalR WebSocket Client</h2>
+
+    <button onclick="connect()">Connect</button>
+    <button onclick="subscribe()">Subscribe</button>
+    <button onclick="unsubscribe()">Unsubscribe</button>
+
+    <pre id="log"></pre>
+
+    <script>
+        let connection;
+        const groupName = "ProcessedGateContractStatsGroup"; // must match backend group used in broadcasting
+
+        function log(message) {
+            document.getElementById("log").textContent += message + "\n";
+        }
+
+        async function connect() {
+            connection = new signalR.HubConnectionBuilder()
+                .withUrl("https://localhost:7001/ws/gate-contract-stats") // replace port if different
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+
+            connection.on("ProcessedGateContractStatsData", message => {
+                log("Received: " + message);
+            });
+
+            try {
+                await connection.start();
+                log("Connected to SignalR Hub " + groupName);
+            } catch (err) {
+                console.error(err);
+                log("Connection failed: " + err.toString());
+            }
+        }
+
+        async function subscribe() {
+            const message = {
+                time: Date.now(),
+                channel: "futures.contract_stats",
+                event: "subscribe",
+                payload : ["BTC_USDT","5m"]
+                };
+
+            try {
+                await connection.invoke("Subscribe", JSON.stringify(message), groupName);
+                log("Subscribed to BTC_USDT via group: " + groupName);
+            } catch (err) {
+                console.error(err);
+                log("Subscribe failed: " + err.toString());
+            }
+        }
+
+        async function unsubscribe() {
+            try {
+                await connection.invoke("Unsubscribe", groupName);
+                log("Unsubscribed from group: " + groupName);
+            } catch (err) {
+                console.error(err);
+                log("Unsubscribe failed: " + err.toString());
+            }
+        }
+    </script>
+</body>
+</html>

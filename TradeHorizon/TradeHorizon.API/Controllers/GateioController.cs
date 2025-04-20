@@ -102,8 +102,7 @@ namespace TradeHorizon.API.Controllers
                 if(!string.IsNullOrEmpty(errorMessage))
                     return StatusCode(422, new {message = errorMessage});
 
-                string jsondata = JsonSerializer.Serialize(orderBookList);
-                await _broadcaster.BroadcastOrderBookAsync(jsondata ?? string.Empty);
+                await _broadcaster.BroadcastOrderBookAsync(orderBookList ?? new());
                 return Ok(orderBookList);
             }
             catch(Exception ex)

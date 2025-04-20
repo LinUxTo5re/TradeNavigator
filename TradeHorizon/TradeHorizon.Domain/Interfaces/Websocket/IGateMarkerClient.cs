@@ -1,4 +1,4 @@
-namespace TradeHorizon.Domain.Websockets.Interfaces
+namespace TradeHorizon.Domain.Interfaces.Websockets
 {
     public interface IGateTickerClient : IWebSocketClient { }
     public interface IGateTradesClient : IWebSocketClient { }

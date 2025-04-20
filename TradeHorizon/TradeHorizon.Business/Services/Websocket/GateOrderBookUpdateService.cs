@@ -1,5 +1,5 @@
-using TradeHorizon.Domain.Websockets.Interfaces;
-using System.Text.Json;
+using TradeHorizon.Domain.Interfaces.Websockets;
+using TradeHorizon.Domain.Constants;
 
 namespace TradeHorizon.Business.Services.Websocket
 {
@@ -19,7 +19,7 @@ namespace TradeHorizon.Business.Services.Websocket
             {
                 webSocketMessage = WebSocketMessageDeserializer.DeserializeWithResultData<OrderBookUpdateModel>(rawMessage);
                 // string json = JsonSerializer.Serialize(webSocketMessage);
-                await _broadcaster.BroadcastToGroupAsync("ProcessedOrderBookUpdateGroup", "ProcessedOrderBookUpdateData", webSocketMessage);
+                await _broadcaster.BroadcastToGroupAsync(SignalRConstants.OrderBookUpdateGroupWS, SignalRConstants.ReceiveOrderBookUpdateWS, webSocketMessage);
             }
         }
     }

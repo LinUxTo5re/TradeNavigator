@@ -1,5 +1,5 @@
 
-namespace TradeHorizon.Domain.Websockets.Interfaces
+namespace TradeHorizon.Domain.Interfaces.Websockets
 {
     public interface IGateTickerBroadcaster : ISignalRBroadcaster { }
     public interface IGateTradesBroadcaster : ISignalRBroadcaster { }

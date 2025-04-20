@@ -15,7 +15,7 @@
 
     <script>
         let connection;
-        const groupName = "ProcessedGateContractStatsGroup"; // must match backend group used in broadcasting
+        const groupName = "OrderBookGroup"; // must match backend group used in broadcasting
 
         function log(message) {
             document.getElementById("log").textContent += message + "\n";
@@ -23,12 +23,12 @@
 
         async function connect() {
             connection = new signalR.HubConnectionBuilder()
-                .withUrl("https://localhost:7001/ws/gate-contract-stats") // replace port if different
+                .withUrl("https://localhost:7001/orderbookhub") // replace port if different
                 .configureLogging(signalR.LogLevel.Information)
                 .build();
 
-            connection.on("ProcessedGateContractStatsData", message => {
-                log("Received: " + message);
+            connection.on("ReceiveOrderBook", message => {
+                log("Received: " + JSON.stringify(message, null, 2));
             });
 
             try {
@@ -41,16 +41,9 @@
         }
 
         async function subscribe() {
-            const message = {
-                time: Date.now(),
-                channel: "futures.contract_stats",
-                event: "subscribe",
-                payload: ["BTC_USDT","5m"]
-            };
-
             try {
-                await connection.invoke("Subscribe", JSON.stringify(message), groupName);
-                log("Subscribed to BTC_USDT via group: " + groupName);
+                await connection.invoke("JoinGroup", groupName);
+                log("Subscribed to group: " + groupName);
             } catch (err) {
                 console.error(err);
                 log("Subscribe failed: " + err.toString());

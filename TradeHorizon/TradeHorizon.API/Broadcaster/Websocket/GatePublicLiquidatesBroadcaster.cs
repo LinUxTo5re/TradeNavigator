@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.SignalR;
-using TradeHorizon.Domain.Websockets.Interfaces;
+using TradeHorizon.Domain.Interfaces.Websockets;
 using TradeHorizon.API.Hubs;
 public class GatePublicLiquidatesBroadcaster : IGatePublicLiquidatesBroadcaster
 {

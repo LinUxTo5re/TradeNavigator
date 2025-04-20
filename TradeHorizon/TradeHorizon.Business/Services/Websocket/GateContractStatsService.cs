@@ -1,4 +1,5 @@
-using TradeHorizon.Domain.Websockets.Interfaces;
+using TradeHorizon.Domain.Interfaces.Websockets;
+using TradeHorizon.Domain.Constants;
 using System.Text.Json;
 
 namespace TradeHorizon.Business.Services.Websocket
@@ -17,8 +18,8 @@ namespace TradeHorizon.Business.Services.Websocket
             if(!string.IsNullOrEmpty(rawMessage))
             {
                 webSocketMessage = WebSocketMessageDeserializer.DeserializeWithResultData<ContractStatModel>(rawMessage);
-                // string json = JsonSerializer.Serialize(webSocketMessage);
-                await _broadcaster.BroadcastToGroupAsync("ProcessedGateContractStatsGroup", "ProcessedGateContractStatsData", webSocketMessage);
+                string json = JsonSerializer.Serialize(webSocketMessage);
+                await _broadcaster.BroadcastToGroupAsync(SignalRConstants.ContractStatsGroupWS, SignalRConstants.ReceiveContractStatsWS, json);
             }
         }
     }

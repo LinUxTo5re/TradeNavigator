@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.SignalR;
-using TradeHorizon.Domain.Websockets.Interfaces;
+using TradeHorizon.Domain.Interfaces.Websockets;
 using TradeHorizon.API.Hubs;
-public class GateContractStatsBroadcaster : IGateContractStatsBroadcaster
+public class GateTickerBroadcaster : IGateTickerBroadcaster
 {
-    private readonly IHubContext<GateContractStatsHub> _hubContext;
+    private readonly IHubContext<GateTickerHub> _hubContext;
 
-    public GateContractStatsBroadcaster(IHubContext<GateContractStatsHub> hubContext)
+    public GateTickerBroadcaster(IHubContext<GateTickerHub> hubContext)
     {
         _hubContext = hubContext;
     }

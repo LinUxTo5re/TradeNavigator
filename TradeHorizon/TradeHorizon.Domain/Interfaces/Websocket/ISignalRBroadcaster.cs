@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 
-namespace TradeHorizon.Domain.Websockets.Interfaces
+namespace TradeHorizon.Domain.Interfaces.Websockets
 {
     public interface ISignalRBroadcaster
     {

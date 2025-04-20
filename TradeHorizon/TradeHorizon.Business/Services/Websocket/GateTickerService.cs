@@ -1,5 +1,5 @@
-using TradeHorizon.Domain.Websockets.Interfaces;
-using System.Text.Json;
+using TradeHorizon.Domain.Interfaces.Websockets;
+using TradeHorizon.Domain.Constants;
 
 namespace TradeHorizon.Business.Services.Websocket
 {
@@ -17,7 +17,7 @@ namespace TradeHorizon.Business.Services.Websocket
             if(!string.IsNullOrEmpty(rawMessage))
             {
                 webSocketMessage = WebSocketMessageDeserializer.DeserializeWithResultData<TickerModel>(rawMessage);
-                await _broadcaster.BroadcastToGroupAsync("ProcessedGateTickerGroup", "ProcessedGateTickerData", webSocketMessage);
+                await _broadcaster.BroadcastToGroupAsync(SignalRConstants.TickerGroupWS, SignalRConstants.ReceiveTickerWS, webSocketMessage);
             }
         }
     }

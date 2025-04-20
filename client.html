@@ -15,7 +15,7 @@
 
     <script>
         let connection;
-        const groupName = "ProcessedGateContractStatsGroup"; // must match backend group used in broadcasting
+        const groupName = "ContractStatsGroupWS"; // must match backend group used in broadcasting
 
         function log(message) {
             document.getElementById("log").textContent += message + "\n";
@@ -27,7 +27,7 @@
                 .configureLogging(signalR.LogLevel.Information)
                 .build();
 
-            connection.on("ProcessedGateContractStatsData", message => {
+            connection.on("ReceiveContractStatsWS", message => {
                 log("Received: " + message);
             });
 

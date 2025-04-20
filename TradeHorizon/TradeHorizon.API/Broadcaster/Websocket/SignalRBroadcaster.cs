@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.SignalR;
-using TradeHorizon.Domain.Websockets.Interfaces;
+using TradeHorizon.Domain.Interfaces.Websockets;
 
 namespace TradeHorizon.API.Hubs.Broadcaster
 {

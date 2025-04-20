@@ -1,0 +1,219 @@
+REST API DATA:
+1) ohlcv - [
+  {
+    "t": 1539852480,
+    "v": 97151,
+    "c": "1.032",
+    "h": "1.032",
+    "l": "1.032",
+    "o": "1.032",
+    "sum": "3580"
+  }
+]
+2) funding rate - [
+  {
+    "t": 1543968000,
+    "r": "0.000157"
+  }
+]
+3) contract_stats - [
+  {
+    "time": 1603865400,
+    "lsr_taker": 100,
+    "lsr_account": 0.5,
+    "long_liq_size": 0,
+    "short_liq_size": 0,
+    "open_interest": 124724,
+    "short_liq_usd": 0,
+    "mark_price": "8865",
+    "top_lsr_size": 1.02,
+    "short_liq_amount": 0,
+    "long_liq_amount": 0,
+    "open_interest_usd": 1511,
+    "top_lsr_account": 1.5,
+    "long_liq_usd": 0
+  }
+]
+4) order book - {
+  "id": 123456,
+  "current": 1623898993.123,
+  "update": 1623898993.121,
+  "asks": [
+    {
+      "p": "1.52",
+      "s": 100
+    },
+    {
+      "p": "1.53",
+      "s": 40
+    }
+  ],
+  "bids": [
+    {
+      "p": "1.17",
+      "s": 150
+    },
+    {
+      "p": "1.16",
+      "s": 203
+    }
+  ]
+}
+5) liquidation history- 
+[
+  {
+    "time": 1548654951,
+    "contract": "BTC_USDT",
+    "size": 600,
+    "order_size": -600,
+    "order_price": "3405",
+    "fill_price": "3424",
+    "left": 0
+  }
+]
+
+WEBSOCKET DATA:
+1) tickers api - {
+  "time": 1541659086,
+  "time_ms": 1541659086123,
+  "channel": "futures.tickers",
+  "event": "update",
+  "result": [
+    {
+      "contract": "BTC_USD",
+      "last": "118.4",
+      "change_percentage": "0.77",
+      "funding_rate": "-0.000114",
+      "funding_rate_indicative": "0.01875",
+      "mark_price": "118.35",
+      "index_price": "118.36",
+      "total_size": "73648",
+      "volume_24h": "745487577",
+      "volume_24h_btc": "117",
+      "volume_24h_usd": "419950",
+      "quanto_base_rate": "",
+      "volume_24h_quote": "1665006",
+      "volume_24h_settle": "178",
+      "volume_24h_base": "5526",
+      "low_24h": "99.2",
+      "high_24h": "132.5"
+    }
+  ]
+}
+2) trades - {
+  "channel": "futures.trades",
+  "event": "update",
+  "time": 1541503698,
+  "time_ms": 1541503698123,
+  "result": [
+    {
+      "size": -108,
+      "id": 27753479,
+      "create_time": 1545136464,
+      "create_time_ms": 1545136464123,
+      "price": "96.4",
+      "contract": "BTC_USD",
+      "is_internal": true
+    }
+  ]
+}
+3) order book - {
+  "time": 1615366381,
+  "time_ms": 1615366381123,
+  "channel": "futures.order_book_update",
+  "event": "update",
+  "result": {
+    "t": 1615366381417,
+    "s": "BTC_USD",
+    "U": 2517661101,
+    "u": 2517661113,
+    "b": [
+      {
+        "p": "54672.1",
+        "s": 0
+      },
+      {
+        "p": "54664.5",
+        "s": 58794
+      }
+    ],
+    "a": [
+      {
+        "p": "54743.6",
+        "s": 0
+      },
+      {
+        "p": "54742",
+        "s": 95
+      }
+    ]
+  }
+}
+4) candlesticks - {
+  "time": 1542162490,
+  "time_ms": 1542162490123,
+  "channel": "futures.candlesticks",
+  "event": "update",
+  "result": [
+    {
+      "t": 1545129300,
+      "v": 27525555,
+      "c": "95.4",
+      "h": "96.9",
+      "l": "89.5",
+      "o": "94.3",
+      "n": "1m_BTC_USD",
+      "a": "314732.87412"
+    },
+    {
+      "t": 1545129300,
+      "v": 27525555,
+      "c": "95.4",
+      "h": "96.9",
+      "l": "89.5",
+      "o": "94.3",
+      "n": "1m_BTC_USD",
+      "a": "314732.87412"
+    }
+  ]
+}
+5) public liquidation order  - 
+{
+    "channel": "futures.public_liquidates",
+    "event": "update",
+    "time": 1541505434,
+    "time_ms": 1541505434123,
+    "result": [
+        {
+        "price": 215.1,
+        "size": -124,
+        "time_ms": 1541486601123,
+        "contract": "BTC_USD",
+        }
+    ]
+}
+6) contract stats - {
+  "time": 1541659086,
+  "time_ms": 1541659086123,
+  "channel": "futures.contract_stats",
+  "event": "update",
+  "result": [
+    {
+      "time": 1603865400,
+      "contract": "BTC_USDT",
+      "lsr_taker": 100,
+      "lsr_account": 0.5,
+      "long_liq_size": 0,
+      "short_liq_size": 0,
+      "open_interest": 124724,
+      "short_liq_usd": 0,
+      "mark_price": "8865",
+      "top_lsr_size": 1.02,
+      "short_liq_amount": 0,
+      "long_liq_amount": 0,
+      "open_interest_usd": 1511,
+      "top_lsr_account": 1.5,
+      "long_liq_usd": 0
+    }
+  ]
+}

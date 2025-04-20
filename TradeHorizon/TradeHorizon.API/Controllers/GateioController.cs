@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using TradeHorizon.Business.Interfaces.RestAPI;
 using TradeHorizon.Domain.Constants;
+using TradeHorizon.Domain.Interfaces.RestAPI;
+using System.Text.Json;
 
 namespace TradeHorizon.API.Controllers
 {
@@ -9,10 +11,12 @@ namespace TradeHorizon.API.Controllers
     public class GateioController : ControllerBase
     {
         private readonly IGateioService _gateioService;
+        private readonly IGateioBroadcaster _broadcaster;
 
-        public GateioController(IGateioService gateioService)
+        public GateioController(IGateioService gateioService, IGateioBroadcaster broadcaster)
         {
             _gateioService = gateioService;
+            _broadcaster = broadcaster;
         }
 
         [HttpGet("ohlcv")]
@@ -28,7 +32,8 @@ namespace TradeHorizon.API.Controllers
 
                 if (!string.IsNullOrEmpty(errorMessage))
                     return StatusCode(422, new { message = errorMessage });
-                    
+                
+                await _broadcaster.BroadcastOHLCVAsync(historicalOHLCV ?? []);
                 return Ok(historicalOHLCV);
             }
             catch(Exception ex)
@@ -50,7 +55,8 @@ namespace TradeHorizon.API.Controllers
 
                 if (!string.IsNullOrEmpty(errorMessage))
                     return StatusCode(422, new { message = errorMessage });
-
+                
+                await _broadcaster.BroadcastFundingRateAsync(historicalFundingRate ?? []);
                 return Ok(historicalFundingRate);
             }
             catch(Exception ex)
@@ -73,6 +79,7 @@ namespace TradeHorizon.API.Controllers
                 if(!string.IsNullOrEmpty(errorMessage))
                     return StatusCode(422, new { message = errorMessage });
 
+                await _broadcaster.BroadcastContractStatsAsync(historicalContractStats ?? []);
                 return Ok(historicalContractStats);
             }
             catch(Exception ex)
@@ -95,6 +102,8 @@ namespace TradeHorizon.API.Controllers
                 if(!string.IsNullOrEmpty(errorMessage))
                     return StatusCode(422, new {message = errorMessage});
 
+                string jsondata = JsonSerializer.Serialize(orderBookList);
+                await _broadcaster.BroadcastOrderBookAsync(jsondata ?? string.Empty);
                 return Ok(orderBookList);
             }
             catch(Exception ex)
@@ -117,6 +126,7 @@ namespace TradeHorizon.API.Controllers
                 if(!string.IsNullOrEmpty(errorMessage))
                     return StatusCode(422, new {message = errorMessage});
 
+                await _broadcaster.BroadcastLiqOrdersAsync(liqOrdersList ?? []);
                 return Ok(liqOrdersList);
             }
             catch(Exception ex)

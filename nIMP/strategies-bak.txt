@@ -1,0 +1,55 @@
+📚 Grouped Strategies (REST and WebSocket Individually)
+🟢 Trend Following Strategies
+REST:
+
+Open Interest Expansion (Contract Stats)
+
+WebSocket:
+
+Live Volume Spike Breakout (Tickers)
+
+Big Buyer/Seller Momentum (Trades)
+
+Open Interest Flash Expansion (Contract Stats WS)
+
+🔵 Mean Reversion Strategies
+REST:
+
+Funding Rate Mean Reversion (Funding Rate)
+
+Liquidation Cluster Reversal (Liquidation History)
+
+WebSocket:
+
+Live Liquidation Spike (Public Liquidates)
+
+🟡 Volatility Breakout Strategies
+REST:
+
+High Volatility Breakout (OHLCV)
+
+Price Compression Detection (NEW) (OHLCV)
+
+WebSocket:
+
+1-Min Candle Breakout (Candlesticks)
+
+🔴 Liquidity-Based Strategies
+REST:
+
+Order Book Imbalance (Order Book)
+
+WebSocket:
+
+Order Book Flip (Order Book Update)
+
+🔥 Hybrid (Combined REST + WebSocket) Smart Strategies
+These will combine slow REST preparation + fast WebSocket reaction for very powerful, low-loss signals.
+
+
+#	Name	Description
+1	Strong Trend + Volume Explosion	REST confirms Open Interest Expansion → THEN WebSocket detects Live Volume Spike = 🔥 Entry.
+2	Funding Mean Reversion + Liquidation Confirmation	REST shows extreme Funding Rate → THEN WebSocket detects live Liquidation Spike = 📉 or 📈 Reversal.
+3	Order Book Imbalance + Order Flip	REST shows Order Book heavily imbalanced → THEN WebSocket Order Book flips confirming trade side.
+4	Price Squeeze + 1-min Breakout	REST detects Price Compression → THEN WebSocket 1-min Candle Breakout confirms violent move.
+5	Long Liquidation Build + Big Buyer	REST Liquidation History shows heavy shorts → THEN WebSocket Big Buyer Trade confirms squeeze potential.

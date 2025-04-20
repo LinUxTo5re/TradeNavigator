@@ -1,6 +1,7 @@
 using System.Net.WebSockets;
 using System.Text;
-using TradeHorizon.Domain.Websockets.Interfaces;
+using TradeHorizon.Domain.Interfaces.Websockets;
+using TradeHorizon.Domain.Constants;
 
 namespace TradeHorizon.DataAccess.Repositories.Websocket
 {
@@ -9,10 +10,10 @@ namespace TradeHorizon.DataAccess.Repositories.Websocket
         private readonly IWebSocketProcessor _processor;
         private readonly string _uri;
 
-        public GateWebSocketClient(IWebSocketProcessor processor, string uri)
+        public GateWebSocketClient(IWebSocketProcessor processor)
         {
             _processor = processor;
-            _uri = uri;
+            _uri = WsConstants.GateIoBaseWsUrl;
         }
 
         public async Task StartClientAsync<T>(string userInput, T processor, CancellationToken cancellationToken)

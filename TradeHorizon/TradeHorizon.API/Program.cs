@@ -135,7 +135,7 @@ var app = builder.Build();
 app.MapHub<GateTickerHub>("/ws/gate-ticker");
 app.MapHub<GateTradesHub>("/ws/gate-trades");
 app.MapHub<GateCandlesticksHub>("/ws/gate-candlesticks");
-app.MapHub<GatePublicLiquidatesHub>("/ws/gate-p-liq-orders");
+app.MapHub<GatePublicLiquidatesHub>("/ws/gate-pliq-orders");
 app.MapHub<GateContractStatsHub>("/ws/gate-contract-stats");
 app.MapHub<GateOrderBookUpdateHub>("/ws/gate-order-book");
 

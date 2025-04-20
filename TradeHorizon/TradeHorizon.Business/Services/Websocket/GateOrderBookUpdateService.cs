@@ -1,10 +1,12 @@
 using TradeHorizon.Domain.Websockets.Interfaces;
+using System.Text.Json;
 
 namespace TradeHorizon.Business.Services.Websocket
 {
     public class GateOrderBookUpdateService : IGateOrderBookUpdateProcessor
     {
         private readonly IGateOrderBookUpdateBroadcaster _broadcaster;
+        public WebSocketMessage? webSocketMessage = null;
 
         public GateOrderBookUpdateService(IGateOrderBookUpdateBroadcaster broadcaster)
         {
@@ -13,8 +15,12 @@ namespace TradeHorizon.Business.Services.Websocket
 
         public async Task ProcessAsync(string rawMessage)
         {
-            var processed = $"[P-Liq-Orders] {rawMessage}";
-            await _broadcaster.BroadcastToGroupAsync("ProcessedOrderBookUpdateGroup", "ProcessedOrderBookUpdateData", processed);
+            if(!string.IsNullOrEmpty(rawMessage))
+            {
+                webSocketMessage = WebSocketMessageDeserializer.DeserializeWithResultData<OrderBookUpdateModel>(rawMessage);
+                // string json = JsonSerializer.Serialize(webSocketMessage);
+                await _broadcaster.BroadcastToGroupAsync("ProcessedOrderBookUpdateGroup", "ProcessedOrderBookUpdateData", webSocketMessage);
+            }
         }
     }
 }

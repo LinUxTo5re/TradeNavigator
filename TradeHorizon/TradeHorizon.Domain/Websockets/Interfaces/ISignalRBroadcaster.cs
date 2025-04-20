@@ -4,6 +4,6 @@ namespace TradeHorizon.Domain.Websockets.Interfaces
 {
     public interface ISignalRBroadcaster
     {
-        Task BroadcastToGroupAsync(string groupName, string eventName, string message);
+        Task BroadcastToGroupAsync<T>(string groupName, string eventName, T message);
     }
 }

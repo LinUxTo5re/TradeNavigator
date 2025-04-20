@@ -10,7 +10,7 @@ public class GateContractStatsBroadcaster : IGateContractStatsBroadcaster
         _hubContext = hubContext;
     }
 
-    public Task BroadcastToGroupAsync(string groupName, string eventName, string message)
+    public Task BroadcastToGroupAsync<T>(string groupName, string eventName, T message)
     {
         return _hubContext.Clients.Group(groupName).SendAsync(eventName, message);
     }

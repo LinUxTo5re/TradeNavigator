@@ -10,26 +10,26 @@ public static class WebSocketMessageDeserializer
             var webSocketMessage = JsonSerializer.Deserialize<WebSocketMessage>(json);
             JsonElement root = JsonSerializer.Deserialize<JsonElement>(json);
 
-            if(root.TryGetProperty("result", out JsonElement resultElement))
+            if (root.TryGetProperty("result", out JsonElement resultElement))
             {
                 if (resultElement.ValueKind == JsonValueKind.Object) // for status 
                 {
-                    resultData = JsonSerializer.Deserialize<JsonElement>(resultElement.GetRawText()).TryGetProperty("status", out JsonElement checkStatusElement) ? 
+                    resultData = JsonSerializer.Deserialize<JsonElement>(resultElement.GetRawText()).TryGetProperty("status", out JsonElement checkStatusElement) ?
                         JsonSerializer.Deserialize<ResultData<T>>(resultElement.GetRawText()) // normal object
                         :
-                        resultData = new ResultData<T> 
-                            { 
-                                DataArray = JsonSerializer.Deserialize<T>(resultElement.GetRawText()),
-                                Data = null,
-                                Status = null
-                            }; // array inside object 
+                        resultData = new ResultData<T>
+                        {
+                            DataArray = JsonSerializer.Deserialize<T>(resultElement.GetRawText()),
+                            Data = null,
+                            Status = null
+                        }; // array inside object 
 
                 }
                 else if (resultElement.ValueKind == JsonValueKind.Array)
                 {
                     resultData = new ResultData<T>// List of obj
                     {
-                        Status = null, 
+                        Status = null,
                         Data = JsonSerializer.Deserialize<List<T>>(resultElement.GetRawText())
                     };
                 }
@@ -38,10 +38,12 @@ public static class WebSocketMessageDeserializer
             }
             return webSocketMessage;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
-            return new WebSocketMessage{
-                Result = new ResultData<T>{
+            return new WebSocketMessage
+            {
+                Result = new ResultData<T>
+                {
                     Status = $"EXCEPTION: {ex}"
                 }
             };

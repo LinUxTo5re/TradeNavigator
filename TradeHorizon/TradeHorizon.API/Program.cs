@@ -8,6 +8,7 @@ using TradeHorizon.DataAccess.Repositories.Websocket;
 using TradeHorizon.Domain.Interfaces.Websockets;
 using TradeHorizon.Business.Services.Websocket;
 using TradeHorizon.Domain.Interfaces.RestAPI;
+using TradeHorizon.Business.Services.BackgroundService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,18 +16,24 @@ builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 builder.Services.AddSignalR();
 
+#region Background services (start on app)
+builder.Services.AddHostedService<FilterContractWorker>();
+#endregion
+
 #region DI container REST
 builder.Services.AddScoped<IGateioBroadcaster, GateioBroadcaster>();
 builder.Services.AddScoped<ICoinalyzeRepository, CoinalyzeRepository>();
 builder.Services.AddScoped<ICoinalyzeService, CoinalyzeService>();
 builder.Services.AddScoped<IGateioRepository, GateioRepository>();
 builder.Services.AddScoped<IGateioService, GateioService>();
+builder.Services.AddScoped<IFilterContractService, FilterContractService>();
+builder.Services.AddScoped<IFilterContractRepository, FilterContractRepository>();
 #endregion
 
 #region DI container WS 
 #region Ticker
 builder.Services.AddSingleton<IGateTickerBroadcaster, GateTickerBroadcaster>();  // Broadcaster
-builder.Services.AddSingleton<IGateTickerProcessor, GateTickerService>(); 
+builder.Services.AddSingleton<IGateTickerProcessor, GateTickerService>();
 
 builder.Services.AddSingleton<IGateTradesClient>(provider =>
     new GateTradeClient(

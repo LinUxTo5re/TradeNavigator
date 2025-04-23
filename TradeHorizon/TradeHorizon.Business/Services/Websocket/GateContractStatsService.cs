@@ -15,7 +15,7 @@ namespace TradeHorizon.Business.Services.Websocket
 
         public async Task ProcessAsync(string rawMessage)
         {
-            if(!string.IsNullOrEmpty(rawMessage))
+            if (!string.IsNullOrEmpty(rawMessage))
             {
                 webSocketMessage = WebSocketMessageDeserializer.DeserializeWithResultData<ContractStatModel>(rawMessage);
                 string json = JsonSerializer.Serialize(webSocketMessage);

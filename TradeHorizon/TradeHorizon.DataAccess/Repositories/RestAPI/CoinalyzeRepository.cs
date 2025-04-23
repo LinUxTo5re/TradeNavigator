@@ -20,11 +20,11 @@ namespace TradeHorizon.DataAccess.Repositories.RestAPI
                 using var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Add("api-key", ApiConstants.CoinalyzeAPIKEY);
 
-                HttpResponseMessage  httpResponseMessage = await _httpClient.SendAsync(request);
+                HttpResponseMessage httpResponseMessage = await _httpClient.SendAsync(request);
                 httpResponseMessage.EnsureSuccessStatusCode();
                 return await httpResponseMessage.Content.ReadAsStringAsync() ?? string.Empty;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return string.Empty;
             }
@@ -42,7 +42,7 @@ namespace TradeHorizon.DataAccess.Repositories.RestAPI
                     currentFRUrl = $"{ApiConstants.CoinalyzeBaseUrl}{ApiConstants.CurrentFundingRateUrl}?symbols={symbols}";
                 return await GetResponseTextAsync(currentFRUrl);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return string.Empty;
             }
@@ -53,13 +53,13 @@ namespace TradeHorizon.DataAccess.Repositories.RestAPI
             string historicalFR = string.Empty;
             try
             {
-                if(isPredicted)
-                    historicalFR =  $"{ApiConstants.CoinalyzeBaseUrl}{ApiConstants.HistoricalPredictedFundingRateUrl}?symbols={symbols}&interval={interval}&from={from}&to={to}";
+                if (isPredicted)
+                    historicalFR = $"{ApiConstants.CoinalyzeBaseUrl}{ApiConstants.HistoricalPredictedFundingRateUrl}?symbols={symbols}&interval={interval}&from={from}&to={to}";
                 else
                     historicalFR = $"{ApiConstants.CoinalyzeBaseUrl}{ApiConstants.HistoricalFundingRateUrl}?symbols={symbols}&interval={interval}&from={from}&to={to}";
                 return await GetResponseTextAsync(historicalFR);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return string.Empty;
             }
@@ -69,10 +69,10 @@ namespace TradeHorizon.DataAccess.Repositories.RestAPI
         {
             try
             {
-            string currentOIUrl = $"{ApiConstants.CoinalyzeBaseUrl}{ApiConstants.CurrentOIUrl}?symbols={symbols}";
-            return await GetResponseTextAsync(currentOIUrl);
+                string currentOIUrl = $"{ApiConstants.CoinalyzeBaseUrl}{ApiConstants.CurrentOIUrl}?symbols={symbols}";
+                return await GetResponseTextAsync(currentOIUrl);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return string.Empty;
             }
@@ -87,7 +87,7 @@ namespace TradeHorizon.DataAccess.Repositories.RestAPI
                 string historicalOIUrl = $"{ApiConstants.CoinalyzeBaseUrl}{ApiConstants.HistoricalOIUrl}?symbols={symbols}&interval={interval}&from={from}&to={to}&convert_to_usd={convert_to_usd}";
                 return await GetResponseTextAsync(historicalOIUrl);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return string.Empty;
             }
@@ -99,8 +99,9 @@ namespace TradeHorizon.DataAccess.Repositories.RestAPI
             try
             {
                 string liquidationHistoryUrl = $"{ApiConstants.CoinalyzeBaseUrl}{ApiConstants.LiquidationHistoryUrl}?symbols={symbols}&interval={interval}&from={from}&to={to}&convert_to_usd={convert_to_usd}";
-                return await GetResponseTextAsync(liquidationHistoryUrl);            }
-            catch(Exception)
+                return await GetResponseTextAsync(liquidationHistoryUrl);
+            }
+            catch (Exception)
             {
                 return string.Empty;
             }
@@ -114,7 +115,7 @@ namespace TradeHorizon.DataAccess.Repositories.RestAPI
                 string longShortRatioUrl = $"{ApiConstants.CoinalyzeBaseUrl}{ApiConstants.LongShortRationUrl}?symbols={symbols}&interval={interval}&from={from}&to={to}";
                 return await GetResponseTextAsync(longShortRatioUrl);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return string.Empty;
             }

@@ -17,7 +17,7 @@ namespace TradeHorizon.Business.Services.RestAPI
         {
             try
             {
-                if((from > 0 && to > 0 && limit > 0) || (from > to) || limit > ApiConstants.GateIoOHLCVHistLimit)
+                if ((from > 0 && to > 0 && limit > 0) || (from > to) || limit > ApiConstants.GateIoOHLCVHistLimit)
                     return new List<OHLCVModel>{
                         new OHLCVModel {
                             ApiErrors = new ApiError{
@@ -36,17 +36,17 @@ namespace TradeHorizon.Business.Services.RestAPI
                     };
 
                 string historicalOHLCVText = await _gateioRepository.GetOHLCVHistAsync(contract, from, to, limit, interval);
-                if(string.IsNullOrEmpty(historicalOHLCVText))
+                if (string.IsNullOrEmpty(historicalOHLCVText))
                     return new List<OHLCVModel>();
 
-                var historicalOHLCVList = JsonSerializer.Deserialize<List<OHLCVModel>>(historicalOHLCVText, new JsonSerializerOptions 
-                { 
-                    PropertyNameCaseInsensitive = true 
+                var historicalOHLCVList = JsonSerializer.Deserialize<List<OHLCVModel>>(historicalOHLCVText, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
                 });
 
                 return historicalOHLCVList ?? new List<OHLCVModel>();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new List<OHLCVModel>{
                         new OHLCVModel{
@@ -62,7 +62,7 @@ namespace TradeHorizon.Business.Services.RestAPI
         {
             try
             {
-                if((from > 0 && to > 0 && limit > 0) || (from > to) || limit > ApiConstants.GateIoFundingRateHistLimit)
+                if ((from > 0 && to > 0 && limit > 0) || (from > to) || limit > ApiConstants.GateIoFundingRateHistLimit)
                     return new List<FundingRateModel>
                     {
                         new FundingRateModel{
@@ -72,17 +72,17 @@ namespace TradeHorizon.Business.Services.RestAPI
                         }
                     };
 
-                if(from ==0 && to == 0 && limit == 0)
+                if (from == 0 && to == 0 && limit == 0)
                     return new List<FundingRateModel>{
                         new FundingRateModel{
                             ApiErrors = new ApiError{
                                 Error = VarConstants.FromToLimitMissingError
                             }
                         }
-                    }; 
-                
-                string historicalFRText = await _gateioRepository.GetFundingRateHistAsync(contract,from, to, limit);
-                if(string.IsNullOrEmpty(historicalFRText))
+                    };
+
+                string historicalFRText = await _gateioRepository.GetFundingRateHistAsync(contract, from, to, limit);
+                if (string.IsNullOrEmpty(historicalFRText))
                     return new List<FundingRateModel>();
 
                 var historicalFRList = JsonSerializer.Deserialize<List<FundingRateModel>>(historicalFRText, new JsonSerializerOptions
@@ -91,7 +91,7 @@ namespace TradeHorizon.Business.Services.RestAPI
                 });
                 return historicalFRList ?? new List<FundingRateModel>();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new List<FundingRateModel>{
                     new FundingRateModel{
@@ -107,9 +107,9 @@ namespace TradeHorizon.Business.Services.RestAPI
         {
             try
             {
-                if((limit > ApiConstants.GateIoContractStatsLimit) || (from ==0 && limit == 0))
+                if ((limit > ApiConstants.GateIoContractStatsLimit) || (from == 0 && limit == 0))
                     return new List<ContractStatsModel>{
-                        new ContractStatsModel{ 
+                        new ContractStatsModel{
                             ApiErrors = new ApiError{
                                 Error = string.Concat(VarConstants.FromLimitError, " Allowed Limit: ", ApiConstants.GateIoContractStatsLimit)
                             }
@@ -117,15 +117,16 @@ namespace TradeHorizon.Business.Services.RestAPI
                     };
 
                 string historicalContractStatsText = await _gateioRepository.GetContractStatsAsync(contract, from, interval, limit);
-                if(string.IsNullOrEmpty(historicalContractStatsText))
+                if (string.IsNullOrEmpty(historicalContractStatsText))
                     return new List<ContractStatsModel>();
 
-                var historicalContractStatsList = JsonSerializer.Deserialize<List<ContractStatsModel>>(historicalContractStatsText, new JsonSerializerOptions{
+                var historicalContractStatsList = JsonSerializer.Deserialize<List<ContractStatsModel>>(historicalContractStatsText, new JsonSerializerOptions
+                {
                     PropertyNameCaseInsensitive = true
                 });
                 return historicalContractStatsList ?? new List<ContractStatsModel>();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new List<ContractStatsModel>{
                     new ContractStatsModel{
@@ -141,23 +142,26 @@ namespace TradeHorizon.Business.Services.RestAPI
         {
             try
             {
-                if(limit > ApiConstants.GateIoOrderBookLimit)
+                if (limit > ApiConstants.GateIoOrderBookLimit)
                     limit = ApiConstants.GateIoOrderBookLimit;
 
                 string orderBookText = await _gateioRepository.GetOrderBookAsync(contract, interval, limit, with_id);
-                if(string.IsNullOrEmpty(orderBookText))
+                if (string.IsNullOrEmpty(orderBookText))
                     return new OrderBookModel();
-                var orderBook = JsonSerializer.Deserialize<OrderBookModel>(orderBookText, new JsonSerializerOptions{
+                var orderBook = JsonSerializer.Deserialize<OrderBookModel>(orderBookText, new JsonSerializerOptions
+                {
                     PropertyNameCaseInsensitive = true
                 });
                 return orderBook ?? new OrderBookModel();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return new OrderBookModel{
-                   ApiErrors = new ApiError{
-                    Error = ex.ToString()
-                   }
+                return new OrderBookModel
+                {
+                    ApiErrors = new ApiError
+                    {
+                        Error = ex.ToString()
+                    }
                 };
             }
         }
@@ -166,20 +170,20 @@ namespace TradeHorizon.Business.Services.RestAPI
         {
             try
             {
-                if(limit > ApiConstants.GateIoLiqOrdersLimit)
+                if (limit > ApiConstants.GateIoLiqOrdersLimit)
                     limit = ApiConstants.GateIoLiqOrdersLimit;
 
                 string liquidationOrdersText = await _gateioRepository.GetLiqOrdersAsync(contract, from, to, limit);
-                if(string.IsNullOrEmpty(liquidationOrdersText))
+                if (string.IsNullOrEmpty(liquidationOrdersText))
                     return new List<LiquidationOrderModel>();
-                
+
                 var liquidationOrdersList = JsonSerializer.Deserialize<List<LiquidationOrderModel>>(liquidationOrdersText, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
                 return liquidationOrdersList ?? new List<LiquidationOrderModel>();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new List<LiquidationOrderModel>{
                     new LiquidationOrderModel {

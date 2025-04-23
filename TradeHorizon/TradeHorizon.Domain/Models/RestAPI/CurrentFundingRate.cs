@@ -1,4 +1,4 @@
 public class CurrentFundingRate
 {
-    public CurrentOI? CurrentFR {get; set;}
+    public CurrentOI? CurrentFR { get; set; }
 }

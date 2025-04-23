@@ -14,7 +14,7 @@ namespace TradeHorizon.DataAccess.Repositories.Websocket
         }
         public async Task StartClientAsync<T>(string userInput, T processor, CancellationToken cancellationToken)
         {
-           await _webClient.StartClientAsync(userInput, _processor, cancellationToken);
+            await _webClient.StartClientAsync(userInput, _processor, cancellationToken);
         }
     }
 }

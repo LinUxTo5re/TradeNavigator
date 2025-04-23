@@ -29,7 +29,7 @@ namespace TradeHorizon.Business.Services.RestAPI
                 if (rawData?.Count == 0 || rawData == null)
                     return new CurrentFundingRate();
 
-                var fundingRateData =  rawData.FirstOrDefault() ?? new Dictionary<string, JsonElement>();
+                var fundingRateData = rawData.FirstOrDefault() ?? new Dictionary<string, JsonElement>();
 
                 return new CurrentFundingRate
                 {
@@ -41,7 +41,7 @@ namespace TradeHorizon.Business.Services.RestAPI
                     }
                 } ?? new CurrentFundingRate();
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return new CurrentFundingRate();
             }
@@ -61,7 +61,7 @@ namespace TradeHorizon.Business.Services.RestAPI
                 });
                 return historicalFRList ?? new List<OHLCVData>();
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return new List<OHLCVData>();
             }
@@ -71,17 +71,17 @@ namespace TradeHorizon.Business.Services.RestAPI
         {
             try
             {
-            string currentOIText = await _coinalyzeRepository.GetCurrentOpenInterestAsync(symbols); 
-            if (string.IsNullOrEmpty(currentOIText))
-                return new CurrentOI();
-            List<CurrentOI>? currentOIList = JsonSerializer.Deserialize<List<CurrentOI>>(currentOIText, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-            
-            return currentOIList?.FirstOrDefault() ?? new CurrentOI();
+                string currentOIText = await _coinalyzeRepository.GetCurrentOpenInterestAsync(symbols);
+                if (string.IsNullOrEmpty(currentOIText))
+                    return new CurrentOI();
+                List<CurrentOI>? currentOIList = JsonSerializer.Deserialize<List<CurrentOI>>(currentOIText, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                return currentOIList?.FirstOrDefault() ?? new CurrentOI();
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return new CurrentOI();
             }
@@ -92,17 +92,17 @@ namespace TradeHorizon.Business.Services.RestAPI
         {
             try
             {
-            string historicalOIText = await _coinalyzeRepository.GetHistoricalOpenInterestAsync(symbols, interval, from, to, convert_to_usd);
-            if (string.IsNullOrEmpty(historicalOIText))
-                return new List<OHLCVData>();
-            var historicalOIList = JsonSerializer.Deserialize<List<OHLCVData>>(historicalOIText, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true 
-            });
+                string historicalOIText = await _coinalyzeRepository.GetHistoricalOpenInterestAsync(symbols, interval, from, to, convert_to_usd);
+                if (string.IsNullOrEmpty(historicalOIText))
+                    return new List<OHLCVData>();
+                var historicalOIList = JsonSerializer.Deserialize<List<OHLCVData>>(historicalOIText, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
 
-            return historicalOIList ?? new List<OHLCVData>(); 
+                return historicalOIList ?? new List<OHLCVData>();
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return new List<OHLCVData>();
             }
@@ -122,7 +122,7 @@ namespace TradeHorizon.Business.Services.RestAPI
                 });
                 return liquidationHistoryList ?? new List<LiquidationHistory>();
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return new List<LiquidationHistory>();
             }
@@ -142,7 +142,7 @@ namespace TradeHorizon.Business.Services.RestAPI
                 });
                 return longShortRatioList ?? new List<LiquidationHistory>();
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return new List<LiquidationHistory>();
             }

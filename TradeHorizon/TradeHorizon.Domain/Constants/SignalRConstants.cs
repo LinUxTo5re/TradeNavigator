@@ -37,5 +37,15 @@ namespace TradeHorizon.Domain.Constants
         public const string ReceiveTickerWS = "ReceiveTickerWS";
         public const string ReceiveTradesWS = "ReceiveTradesWS";
         #endregion
+
+        #region Strategies group name
+        public const string BreakoutStrategyGroup = "BreakoutStrategyGroup";
+
+        #endregion
+
+        #region Strategies event name
+        public const string ReceiveBreakoutStrategy = "ReceiveBreakoutStrategy";
+
+        #endregion
     }
 }

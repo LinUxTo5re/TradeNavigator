@@ -15,7 +15,7 @@
 
     <script>
         let connection;
-        const groupName = "OrderBookGroup"; // must match backend group used in broadcasting
+        const groupName = "CandlestickGroupWS"; // must match backend group used in broadcasting
 
         function log(message) {
             document.getElementById("log").textContent += message + "\n";
@@ -23,11 +23,11 @@
 
         async function connect() {
             connection = new signalR.HubConnectionBuilder()
-                .withUrl("https://localhost:7001/orderbookhub") // replace port if different
+                .withUrl("https://localhost:7001/hub/ws/gate-candlesticks") // replace port if different
                 .configureLogging(signalR.LogLevel.Information)
                 .build();
 
-            connection.on("ReceiveOrderBook", message => {
+            connection.on("ReceiveCandlestickDataWS", message => {
                 log("Received: " + JSON.stringify(message, null, 2));
             });
 
@@ -41,8 +41,10 @@
         }
 
         async function subscribe() {
+            const message = {"time" : 123456, "channel" : "futures.candlesticks",
+            "event": "subscribe", "payload" : ["1m", "BTC_USDT"]};
             try {
-                await connection.invoke("JoinGroup", groupName);
+                await connection.invoke("Subscribe", JSON.stringify(message), groupName);
                 log("Subscribed to group: " + groupName);
             } catch (err) {
                 console.error(err);

@@ -9,6 +9,9 @@ using TradeHorizon.Domain.Interfaces.Websockets;
 using TradeHorizon.Business.Services.Websocket;
 using TradeHorizon.Domain.Interfaces.RestAPI;
 using TradeHorizon.Business.Services.BackgroundService;
+using TradeHorizon.Domain.Interfaces.Strategies;
+using TradeHorizon.Business.Services.Strategies;
+using TradeHorizon.API.Hubs.Strategies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +20,8 @@ builder.Services.AddHttpClient();
 builder.Services.AddSignalR();
 
 #region Background services (start on app)
-builder.Services.AddHostedService<FilterContractWorker>();
+// skipping hosted services during development
+// builder.Services.AddHostedService<FilterContractWorker>();
 #endregion
 
 #region DI container REST
@@ -112,6 +116,11 @@ new GateOrderBookUpdateClient(
 #endregion
 #endregion
 
+#region DI container Strategies
+builder.Services.AddScoped<BreakoutStrategyService>();
+builder.Services.AddScoped<IStrategiesBroadcaster, StrategiesBroadcaster>();
+#endregion
+
 #region CORS
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -120,7 +129,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins("http://localhost:8000")
+            policy.WithOrigins("http://localhost:8000", "https://localhost:7001")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
@@ -132,20 +141,24 @@ var app = builder.Build();
 
 #region Hubs
 #region WS hub
-app.MapHub<GateTickerHub>("/ws/gate-ticker");
-app.MapHub<GateTradesHub>("/ws/gate-trades");
-app.MapHub<GateCandlesticksHub>("/ws/gate-candlesticks");
-app.MapHub<GatePublicLiquidatesHub>("/ws/gate-pliq-orders");
-app.MapHub<GateContractStatsHub>("/ws/gate-contract-stats");
-app.MapHub<GateOrderBookUpdateHub>("/ws/gate-order-book");
+app.MapHub<GateTickerHub>("/hub/ws/gate-ticker");
+app.MapHub<GateTradesHub>("/hub/ws/gate-trades");
+app.MapHub<GateCandlesticksHub>("/hub/ws/gate-candlesticks");
+app.MapHub<GatePublicLiquidatesHub>("/hub/ws/gate-pliq-orders");
+app.MapHub<GateContractStatsHub>("/hub/ws/gate-contract-stats");
+app.MapHub<GateOrderBookUpdateHub>("/hub/ws/gate-order-book");
 #endregion
 
-#region  RestAPI hub
-app.MapHub<OhlcvHub>("/ohlcvhub");
-app.MapHub<FundingRateHub>("/fratehub");
-app.MapHub<ContractStatsHub>("/contractstatshub");
-app.MapHub<OrderBookHub>("/orderbookhub");
-app.MapHub<LiqOrdersHub>("/liqordershub");
+#region RestAPI hub
+app.MapHub<OhlcvHub>("/hub/rest/ohlcv");
+app.MapHub<FundingRateHub>("/hub/rest/frate");
+app.MapHub<ContractStatsHub>("/hub/rest/contractstats");
+app.MapHub<OrderBookHub>("/hub/rest/orderbook");
+app.MapHub<LiqOrdersHub>("/hub/rest/liqorders");
+#endregion
+
+#region Strategies hub
+app.MapHub<BreakoutStrategyHub>("/hub/strategy/breakoutstrategy");
 #endregion
 #endregion
 

@@ -15,7 +15,7 @@
 
     <script>
         let connection;
-        const groupName = "ContractStatsGroupWS"; // must match backend group used in broadcasting
+        const groupName = "BreakoutStrategyGroup"; // must match backend group used in broadcasting
 
         function log(message) {
             document.getElementById("log").textContent += message + "\n";
@@ -23,11 +23,11 @@
 
         async function connect() {
             connection = new signalR.HubConnectionBuilder()
-                .withUrl("https://localhost:7001/ws/gate-contract-stats") // replace port if different
+                .withUrl("https://localhost:7001/hub/strategy/breakoutstrategy") // replace port if different
                 .configureLogging(signalR.LogLevel.Information)
                 .build();
 
-            connection.on("ReceiveContractStatsWS", message => {
+            connection.on("ReceiveBreakoutStrategy", message => {
                 log("Received: " + message);
             });
 
@@ -42,15 +42,17 @@
 
         async function subscribe() {
             const message = {
-                time: Date.now(),
-                channel: "futures.contract_stats",
-                event: "subscribe",
-                payload : ["BTC_USDT","5m"]
-                };
+                "ThresholdPercent": 2.5,
+                "SlidingWindow": 20,
+                "PriceSource": "Close",
+                "VolumeConfirmationRequired": true,
+                "VolumeMultiplier": 1.5,
+                "GroupName": "BreakoutStrategyGroup"
+              };              
 
             try {
-                await connection.invoke("Subscribe", JSON.stringify(message), groupName);
-                log("Subscribed to BTC_USDT via group: " + groupName);
+                await connection.invoke("Subscribe", message);
+                log("Subscribed via group: " + groupName);
             } catch (err) {
                 console.error(err);
                 log("Subscribe failed: " + err.toString());

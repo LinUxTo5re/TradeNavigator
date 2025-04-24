@@ -41,8 +41,11 @@
         }
 
         async function subscribe() {
-            const message = {"time" : 123456, "channel" : "futures.candlesticks",
-            "event": "subscribe", "payload" : ["1m", "BTC_USDT"]};
+            const message = {
+    "time" : 123456, "channel" : "futures.candlesticks",
+    "event": "subscribe", "payload" : ["1m", "BTC_USDT"],
+    "contract": "BTC_USDT", "timeframe": "1m"
+};
             try {
                 await connection.invoke("Subscribe", JSON.stringify(message), groupName);
                 log("Subscribed to group: " + groupName);

@@ -28,9 +28,9 @@
                 .build();
 
             connection.on("ReceiveBreakoutStrategy", message => {
-                log("Received: " + message);
+                log("Received: " + JSON.stringify(message, null, 2));
             });
-
+            
             try {
                 await connection.start();
                 log("Connected to SignalR Hub " + groupName);
@@ -42,7 +42,9 @@
 
         async function subscribe() {
             const message = {
-                "ThresholdPercent": 2.5,
+                "Contract": "BTC_USDT",
+                "Timeframe": "5m",
+                "ThresholdPercent": 0.5,
                 "SlidingWindow": 20,
                 "PriceSource": "Close",
                 "VolumeConfirmationRequired": true,

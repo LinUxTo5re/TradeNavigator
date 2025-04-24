@@ -26,6 +26,7 @@ namespace TradeHorizon.API.Hubs.Strategies
             {
                 var breakoutSettingsMap = new BreakoutSettingsModel
                 {
+                    Contract = breakoutSettings.Contract,
                     ThresholdPercent = breakoutSettings.ThresholdPercent,
                     SlidingWindow = breakoutSettings.SlidingWindow,
                     PriceSourceToCheck = priceSource,
@@ -39,9 +40,9 @@ namespace TradeHorizon.API.Hubs.Strategies
 
                 await Groups.AddToGroupAsync(Context.ConnectionId, breakoutSettings.GroupName);
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                Console.WriteLine($"Exception: {ex}");
             }
         }
 

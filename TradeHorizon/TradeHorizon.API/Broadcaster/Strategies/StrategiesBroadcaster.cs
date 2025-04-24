@@ -11,10 +11,11 @@ public class StrategiesBroadcaster : IStrategiesBroadcaster
     {
         _breakoutStrategyHubContext = BreakoutStrategyHubContext;
     }
-    public async Task BroadcastBreakoutStrategyAsync(BreakoutDirection direction, decimal? price, long timestamp)
+    public async Task BroadcastBreakoutStrategyAsync(string contract, BreakoutDirection direction, decimal? price, long timestamp)
     {
         var data = new Dictionary<string, object>
         {
+            {"Contract", contract.ToString()},
             { "Direction", direction.ToString() },
             { "Price", price ?? 0 },
             { "Timestamp", timestamp }

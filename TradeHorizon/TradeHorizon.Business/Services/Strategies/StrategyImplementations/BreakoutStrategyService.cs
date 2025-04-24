@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using TradeHorizon.Domain.Models.Strategies;
 using TradeHorizon.Domain.Constants;
 using TradeHorizon.Domain.Interfaces.Strategies;
+using System.Text.Json;
 
 namespace TradeHorizon.Business.Services.Strategies
 {
@@ -16,15 +17,15 @@ namespace TradeHorizon.Business.Services.Strategies
     {
         private readonly List<Candlestick> _candles = [];
         private readonly IStrategiesBroadcaster _strategiesBroadcaster;
-        public event Action<BreakoutDirection, decimal?, long>? BreakoutDetected;
+        public event Action<string, BreakoutDirection, decimal?, long>? BreakoutDetected;
         public BreakoutSettingsModel _settings = new();
 
         public BreakoutStrategyService(IStrategiesBroadcaster strategiesBroadcaster)
         {
             _strategiesBroadcaster = strategiesBroadcaster;
-            BreakoutDetected += async (direction, price, timestamp) =>
+            BreakoutDetected += async (contract, direction, price, timestamp) =>
             {
-                await _strategiesBroadcaster.BroadcastBreakoutStrategyAsync(direction, price, timestamp);
+                await _strategiesBroadcaster.BroadcastBreakoutStrategyAsync(contract, direction, price, timestamp);
             };
         }
 
@@ -43,45 +44,80 @@ namespace TradeHorizon.Business.Services.Strategies
                     .WithAutomaticReconnect()
                     .Build();
 
-                restApiHubConnection.On<List<Candlestick>>(SignalRConstants.ReceiveOHLCV, candles =>
+                restApiHubConnection.On<List<OHLCVModel>>(SignalRConstants.ReceiveOHLCV, candles =>
                 {
                     foreach (var candle in candles)
                     {
-                        AddCandle(candle);
+                        AddCandle(Restcandle: candle);
                     }
                 });
 
                 await restApiHubConnection.StartAsync();
+                await restApiHubConnection.InvokeAsync("JoinGroup", SignalRConstants.OHLCVGroup);
 
-                webSocketHubConnection.On<Candlestick>(SignalRConstants.ReceiveCandlestickData, candle =>
+                webSocketHubConnection.On<string>(SignalRConstants.ReceiveCandlestickData, candle =>
                 {
-                    AddCandle(candle);
+                    AddCandle(candle: candle);
                 });
 
                 await webSocketHubConnection.StartAsync();
+                await webSocketHubConnection.InvokeAsync("Subscribe", string.Empty, SignalRConstants.CandlestickGroupWS);
+
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                Console.WriteLine($"Exception: {ex}");
             }
         }
 
-        private void AddCandle(Candlestick candle)
+        private void AddCandle(string candle = "", OHLCVModel? Restcandle = null)
         {
+            Candlestick data = new();
             try
             {
-                _candles.Add(candle);
+                if (Restcandle == null) // WS data
+                {
+                    var webSocketMessage = WebSocketMessageDeserializer.DeserializeWithResultData<CandlestickModel>(candle);
+                    if (webSocketMessage?.Result is not ResultData<CandlestickModel> { Data.Count: > 0 } candlestickModels)
+                        return;
+
+                    var candleData = candlestickModels.Data[0];
+                    data = new Candlestick
+                    {
+                        Timestamp = candleData?.Time ?? 0,
+                        Symbol = _settings.Contract,
+                        Open = ShortHandFuncUtils.StringToDecimal(candleData?.Open ?? "0"),
+                        High = ShortHandFuncUtils.StringToDecimal(candleData?.High ?? "0"),
+                        Low = ShortHandFuncUtils.StringToDecimal(candleData?.Low ?? "0"),
+                        Close = ShortHandFuncUtils.StringToDecimal(candleData?.Close ?? "0"),
+                        Volume = candleData?.Volume ?? 0
+                    };
+                }
+                else // REST data
+                {
+                    data = new Candlestick
+                    {
+                        Timestamp = (long)(Restcandle.UnixTimeStamp ?? 0),
+                        Symbol = _settings.Contract,
+                        Open = ShortHandFuncUtils.StringToDecimal(Restcandle.OpenPrice ?? "0"),
+                        High = ShortHandFuncUtils.StringToDecimal(Restcandle.HighPrice ?? "0"),
+                        Low = ShortHandFuncUtils.StringToDecimal(Restcandle.LowPrice ?? "0"),
+                        Close = ShortHandFuncUtils.StringToDecimal(Restcandle.ClosePrice ?? "0"),
+                        Volume = Restcandle?.Volume ?? 0
+                    };
+                }
+                _candles.Add(data);
 
                 if (_candles.Count > 1000)
                 {
                     _candles.RemoveAt(0);
                 }
 
-                CheckForBreakout(candle);
+                CheckForBreakout(data);
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                Console.WriteLine($"Exception: {ex}");
             }
         }
 
@@ -89,7 +125,7 @@ namespace TradeHorizon.Business.Services.Strategies
         {
             try
             {
-                var recentCandles = _candles.TakeLast(_settings.SlidingWindow);
+                var recentCandles = _candles.TakeLast(_settings.SlidingWindow + 1).SkipLast(1); // Exclude the latest candle from sliding window to avoid self-referencing in breakout detection.
 
                 var highestHigh = recentCandles.Max(c => c.High);
                 var lowestLow = recentCandles.Min(c => c.Low);
@@ -129,17 +165,17 @@ namespace TradeHorizon.Business.Services.Strategies
                 }
 
                 if (isBreakout)
-                    OnBreakoutDetected(breakoutDirection, priceToCheck, latestCandle.Timestamp);
+                    OnBreakoutDetected(_settings.Contract, breakoutDirection, priceToCheck, latestCandle.Timestamp);
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                Console.WriteLine($"Exception: {ex}");
             }
         }
 
-        private void OnBreakoutDetected(BreakoutDirection direction, decimal? price, long timestamp)
+        private void OnBreakoutDetected(string contract, BreakoutDirection direction, decimal? price, long timestamp)
         {
-            BreakoutDetected?.Invoke(direction, price, timestamp);
+            BreakoutDetected?.Invoke(contract, direction, price, timestamp);
         }
     }
 }

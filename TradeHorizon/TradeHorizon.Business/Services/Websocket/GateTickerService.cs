@@ -16,8 +16,8 @@ namespace TradeHorizon.Business.Services.Websocket
         {
             if (!string.IsNullOrEmpty(rawMessage))
             {
-                webSocketMessage = WebSocketMessageDeserializer.DeserializeWithResultData<TickerModel>(rawMessage);
-                await _broadcaster.BroadcastToGroupAsync(SignalRConstants.TickerGroupWS, SignalRConstants.ReceiveTickerWS, webSocketMessage);
+                // webSocketMessage = WebSocketMessageDeserializer.DeserializeWithResultData<TickerModel>(rawMessage);
+                await _broadcaster.BroadcastToGroupAsync(SignalRConstants.TickerGroupWS, SignalRConstants.ReceiveTickerWS, rawMessage);
             }
         }
     }

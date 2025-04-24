@@ -12,11 +12,20 @@ namespace TradeHorizon.API.Hubs
             _webSocketClient = webSocketClient;
         }
 
-        public async Task Subscribe(string rawMessage, string groupName)
+        public async Task Subscribe(string? rawMessage, string groupName)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
-            var token = Context.ConnectionAborted;
-            _ = Task.Run(() => _webSocketClient.StartClientAsync(rawMessage, _webSocketClient, token));
+            try
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+                var token = Context.ConnectionAborted;
+
+                if (!string.IsNullOrEmpty(rawMessage))
+                    _ = _webSocketClient.StartClientAsync(rawMessage, _webSocketClient, token);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex}");
+            }
         }
 
         public async Task Unsubscribe(string groupName)

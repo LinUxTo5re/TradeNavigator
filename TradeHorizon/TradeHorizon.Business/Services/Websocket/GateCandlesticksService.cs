@@ -1,5 +1,6 @@
 using TradeHorizon.Domain.Interfaces.Websockets;
 using TradeHorizon.Domain.Constants;
+using System.Text.Json;
 
 namespace TradeHorizon.Business.Services.Websocket
 {
@@ -16,9 +17,9 @@ namespace TradeHorizon.Business.Services.Websocket
         {
             if (!string.IsNullOrEmpty(rawMessage))
             {
-                webSocketMessage = WebSocketMessageDeserializer.DeserializeWithResultData<CandlestickModel>(rawMessage);
+                // webSocketMessage = WebSocketMessageDeserializer.DeserializeWithResultData<CandlestickModel>(rawMessage);
                 // string json = JsonSerializer.Serialize(webSocketMessage);
-                await _broadcaster.BroadcastToGroupAsync(SignalRConstants.CandlestickGroupWS, SignalRConstants.ReceiveCandlestickData, webSocketMessage);
+                await _broadcaster.BroadcastToGroupAsync(SignalRConstants.CandlestickGroupWS, SignalRConstants.ReceiveCandlestickData, rawMessage);
             }
         }
     }

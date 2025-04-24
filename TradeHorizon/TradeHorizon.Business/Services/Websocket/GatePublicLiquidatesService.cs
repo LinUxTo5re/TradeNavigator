@@ -16,9 +16,9 @@ namespace TradeHorizon.Business.Services.Websocket
         {
             if (!string.IsNullOrEmpty(rawMessage))
             {
-                webSocketMessage = WebSocketMessageDeserializer.DeserializeWithResultData<PublicLiqOrdersModel>(rawMessage);
+                // webSocketMessage = WebSocketMessageDeserializer.DeserializeWithResultData<PublicLiqOrdersModel>(rawMessage);
                 // string json = JsonSerializer.Serialize(webSocketMessage);
-                await _broadcaster.BroadcastToGroupAsync(SignalRConstants.PLiqOrdersGroupWS, SignalRConstants.ReceivePLiqOrdersWS, webSocketMessage);
+                await _broadcaster.BroadcastToGroupAsync(SignalRConstants.PLiqOrdersGroupWS, SignalRConstants.ReceivePLiqOrdersWS, rawMessage);
             }
         }
     }

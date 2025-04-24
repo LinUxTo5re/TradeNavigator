@@ -2,7 +2,7 @@
 
 This .NET Core Web API project provides multiple endpoints to fetch trading data from Gate.io, including liquidation orders, order book data, funding rates, OHLCV candles, and more.
 
-## 🌐 Base URL
+## 🌐 Base URL (REST)
 
 ```
 https://localhost:7001/api/gateio
@@ -27,8 +27,6 @@ https://localhost:7001/api/gateio
 ```
 https://localhost:7001/api/gateio/liq-orders?limit=1000&contract=BTC_USDT
 ```
-
----
 
 ### 🔹 2. Get Order Book Snapshot
 
@@ -102,3 +100,134 @@ https://localhost:7001/api/gateio/funding-rate-history?contract=BTC_USDT&lmit=20
 ```
 https://localhost:7001/api/gateio/ohlcv?contract=BTC_USDT&interval=5m&limit=500
 ```
+---
+## 🌐 Base URL (WS -> SignalR)
+
+```
+https://localhost:7001/hub/ws
+```
+
+## Reminder
+- SignalR uses wss instead of https under the hood
+- First connect with endpoint
+- Then send message body to endpoint as user input
+
+## 📘 Available Endpoints
+### 🔹 1. Get candlesticks
+
+**Endpoint:**  
+`/gate-candlesticks"`
+
+**Message Body (JSON):**
+```
+{
+    "time" : 123456, "channel" : "futures.candlesticks",
+    "event": "subscribe", "payload" : ["1m", "BTC_USDT"],
+    "contract": "BTC_USDT", "timeframe": "1m"
+}
+```
+- allowed timeframes: 
+10s, 30s, 1m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 2d, 3d, 5d, 7d, 1w
+- allowed one contract and timeframe at once in payload
+
+**Example:**
+
+```
+https://localhost:7001/hub/ws/gate-candlesticks
+```
+### 🔹 2. Get ticker info
+
+**Endpoint:**  
+`/gate-ticker`
+
+**Message Body (JSON):**
+```
+{
+    "time" : 123456, "channel" : "futures.tickers",
+    "event": "subscribe", "payload" : ["BTC_USDT", "ETH_USDT"],
+}
+```
+- allowed N number of contracts
+
+**Example:**
+
+```
+https://localhost:7001/hub/ws/gate-ticker
+```
+### 🔹 3. Get trades info
+
+**Endpoint:**  
+`/gate-trades`
+
+**Message Body (JSON):**
+```
+{
+    "time" : 123456, "channel" : "futures.trades",
+    "event": "subscribe", "payload" : ["BTC_USDT", "ETH_USDT"],
+}
+```
+- allowed N number of contracts
+
+**Example:**
+
+```
+https://localhost:7001/hub/ws/gate-trades
+```
+### 🔹 4. Get public liquidated orders
+**Endpoint:**  
+`/gate-gate-pliq-orders`
+
+**Message Body (JSON):**
+```
+{
+    "time" : 123456, "channel" : "futures.public_liquidates",
+    "event": "subscribe", "payload" : ["BTC_USDT", "ETH_USDT"],
+}
+```
+- allowed N number of contracts
+
+**Example:**
+
+```
+https://localhost:7001/hub/ws/gate-gate-pliq-orders
+```
+### 🔹 5. Get contract stats
+**Endpoint:**  
+`/gate-contract-stats`
+
+**Message Body (JSON):**
+```
+{
+    "time" : 123456, "channel" : "futures.contract_stats",
+    "event": "subscribe", "payload" : ["BTC_USDT", "1m"],
+    "contract": "BTC_USDT", "timeframe": "1m"
+}
+```
+- allowed timeframes: 1m, 5m
+- allowed one contract and timeframe at once in payload
+**Example:**
+
+```
+https://localhost:7001/hub/ws/gate-contract-stats
+```
+### 🔹 6. Get order book update
+**Endpoint:**  
+`/gate-order-book`
+
+**Message Body (JSON):**
+```
+{
+    "time" : 123456, "channel" : "futures.order_book_update",
+    "event": "subscribe", "payload" : ["BTC_USDT", "100ms", "100"],
+    "contract": "BTC_USDT", "frequency": "100ms"
+}
+```
+- allowed frequency: 20ms, 100ms
+- allowed level (opt): 100, 50, 20 (for 20ms only allowed 20)
+- allowed one contract, frequency and level at once in payload
+**Example:**
+
+```
+https://localhost:7001/hub/ws/gate-order-book
+```
+---

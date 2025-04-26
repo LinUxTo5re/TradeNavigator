@@ -1,4 +1,3 @@
-
 namespace TradeHorizon.Domain.Models.Strategies
 {
     public class BreakoutSettingsModel

@@ -117,8 +117,9 @@ new GateOrderBookUpdateClient(
 #endregion
 
 #region DI container Strategies
-builder.Services.AddScoped<BreakoutStrategyService>();
 builder.Services.AddScoped<IStrategiesBroadcaster, StrategiesBroadcaster>();
+builder.Services.AddScoped<BreakoutStrategyService>();
+builder.Services.AddScoped<MomentumStrategyService>();
 #endregion
 
 #region CORS
@@ -159,6 +160,7 @@ app.MapHub<LiqOrdersHub>("/hub/rest/liqorders");
 
 #region Strategies hub
 app.MapHub<BreakoutStrategyHub>("/hub/strategy/breakoutstrategy");
+app.MapHub<MomentumStrategyHub>("/hub/strategy/momentumstrategy");
 #endregion
 #endregion
 

@@ -40,11 +40,13 @@ namespace TradeHorizon.Domain.Constants
 
         #region Strategies group name
         public const string BreakoutStrategyGroup = "BreakoutStrategyGroup";
+        public const string MomentumStrategyGroup = "MomentumStrategyGroup";
 
         #endregion
 
         #region Strategies event name
         public const string ReceiveBreakoutStrategy = "ReceiveBreakoutStrategy";
+        public const string ReceiveMomentumStrategy = "ReceiveMomentumStrategy";
 
         #endregion
     }

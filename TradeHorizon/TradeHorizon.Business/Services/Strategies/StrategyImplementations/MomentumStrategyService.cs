@@ -6,31 +6,33 @@ using TradeHorizon.Domain.Interfaces.Strategies;
 namespace TradeHorizon.Business.Services.Strategies
 {
     /// <summary>
-    ///  Breakout Strategy Service (When price breaks above a resistance [highestHigh] or below a support [lowestLow])
-    ///--------------------------
-    // Detects price breakouts based on user-defined settings (threshold %, sliding window size, price source, volume confirmation).
-    // Monitors real-time candlestick data to identify upward or downward breakouts.
-    // On detection, triggers an event to broadcast breakout details to SignalR clients and other services.
+    ///  Momentum Strategy Service (Trades	Trade when volume and price both surge in one direction)
+    /// --------------------------
+    /// Detects momentum shifts based on user-defined settings (threshold %, sliding window size, price source, volume confirmation).
+    /// Monitors real-time candlestick data (from both WebSocket and REST APIs) to identify upward or downward momentum movements.
+    /// The strategy allows for both quick momentum detection and confirmation using average price or the most recent candle data.
+    /// On detection, triggers an event to broadcast momentum details (direction, price, timestamp) to SignalR clients and other services.
     /// </summary>
-    public class BreakoutStrategyService
+
+    public class MomentumStrategyService
     {
         private readonly List<Candlestick> _candles = [];
         private readonly IStrategiesBroadcaster _strategiesBroadcaster;
-        public event Action<string, BreakoutDirection, decimal?, long>? BreakoutDetected;
-        public BreakoutSettingsModel _settings = new();
+        public event Action<string, MomentumDirection, decimal?, long>? MomentumDetected;
+        public MomentumSettingsModel _settings = new();
 
-        public BreakoutStrategyService(IStrategiesBroadcaster strategiesBroadcaster)
+        public MomentumStrategyService(IStrategiesBroadcaster strategiesBroadcaster)
         {
             _strategiesBroadcaster = strategiesBroadcaster;
-            BreakoutDetected += async (contract, direction, price, timestamp) =>
+            MomentumDetected += async (contract, direction, price, timestamp) =>
             {
-                await _strategiesBroadcaster.BroadcastBreakoutStrategyAsync(contract, direction, price, timestamp);
+                await _strategiesBroadcaster.BroadcastMomentumStrategyAsync(contract, direction, price, timestamp);
             };
         }
 
-        public async Task ExecuteStrategyAsync(BreakoutSettingsModel breakoutSettings)
+        public async Task ExecuteStrategyAsync(MomentumSettingsModel momentumSettings)
         {
-            _settings = breakoutSettings;
+            _settings = momentumSettings;
             try
             {
                 var restApiHubConnection = new HubConnectionBuilder()
@@ -62,7 +64,6 @@ namespace TradeHorizon.Business.Services.Strategies
 
                 await webSocketHubConnection.StartAsync();
                 await webSocketHubConnection.InvokeAsync("Subscribe", string.Empty, SignalRConstants.CandlestickGroupWS);
-
             }
             catch (Exception ex)
             {
@@ -75,7 +76,7 @@ namespace TradeHorizon.Business.Services.Strategies
             Candlestick data = new();
             try
             {
-                if (Restcandle == null) // WS data
+                if (Restcandle == null)
                 {
                     var webSocketMessage = WebSocketMessageDeserializer.DeserializeWithResultData<CandlestickModel>(candle);
                     if (webSocketMessage?.Result is not ResultData<CandlestickModel> { Data.Count: > 0 } candlestickModels)
@@ -93,7 +94,7 @@ namespace TradeHorizon.Business.Services.Strategies
                         Volume = candleData?.Volume ?? 0
                     };
                 }
-                else // REST data
+                else
                 {
                     data = new Candlestick
                     {
@@ -106,6 +107,7 @@ namespace TradeHorizon.Business.Services.Strategies
                         Volume = Restcandle?.Volume ?? 0
                     };
                 }
+
                 _candles.Add(data);
 
                 if (_candles.Count > 1000)
@@ -113,7 +115,7 @@ namespace TradeHorizon.Business.Services.Strategies
                     _candles.RemoveAt(0);
                 }
 
-                CheckForBreakout(data);
+                CheckForMomentum(data);
             }
             catch (Exception ex)
             {
@@ -121,19 +123,14 @@ namespace TradeHorizon.Business.Services.Strategies
             }
         }
 
-        private void CheckForBreakout(Candlestick latestCandle)
+        private void CheckForMomentum(Candlestick latestCandle)
         {
+            decimal priceChangePercent = decimal.Zero;
             try
             {
                 var recentCandles = _candles.TakeLast(_settings.SlidingWindow + 1).SkipLast(1); // Exclude the latest candle from sliding window to avoid self-referencing in breakout detection.
-                
+
                 if (!recentCandles.Any()) return;
-
-                var highestHigh = recentCandles.Max(c => c.High);
-                var lowestLow = recentCandles.Min(c => c.Low);
-
-                var upperBreakoutLevel = highestHigh * (1 + _settings.ThresholdPercent / 100);
-                var lowerBreakoutLevel = lowestLow * (1 - _settings.ThresholdPercent / 100);
 
                 decimal priceToCheck = _settings.PriceSourceToCheck switch
                 {
@@ -143,31 +140,52 @@ namespace TradeHorizon.Business.Services.Strategies
                     _ => latestCandle.Close,
                 };
 
-                bool isBreakout = false;
-                BreakoutDirection breakoutDirection = BreakoutDirection.Neautral;
-
-                if (priceToCheck > upperBreakoutLevel)
+                if (_settings.IsAvgPriceUsing)
                 {
-                    isBreakout = true;
-                    breakoutDirection = BreakoutDirection.Up;
+                    decimal avgPrice = recentCandles.Average(c => c.Close);
+                    priceChangePercent = (priceToCheck - avgPrice) / avgPrice * 100;
                 }
-                else if (priceToCheck < lowerBreakoutLevel)
+                else
                 {
-                    isBreakout = true;
-                    breakoutDirection = BreakoutDirection.Down;
+                    var lastCandle = recentCandles.Last();
+                    decimal startPrice = _settings.PriceSourceToCheck switch
+                    {
+                        PriceSource.Open => lastCandle.Open,
+                        PriceSource.High => lastCandle.High,
+                        PriceSource.Low => lastCandle.Low,
+                        _ => lastCandle.Close,
+                    };
+
+                    if (startPrice == 0) return;
+                    priceChangePercent = (priceToCheck - startPrice) / startPrice * 100;
                 }
 
-                if (isBreakout && _settings.VolumeConfirmationRequired)
+
+                bool isMomentum = false;
+                MomentumDirection momentumDirection = MomentumDirection.Neautral;
+
+                if (priceChangePercent >= _settings.ThresholdPercent)
+                {
+                    isMomentum = true;
+                    momentumDirection = MomentumDirection.Up;
+                }
+                else if (priceChangePercent <= -_settings.ThresholdPercent)
+                {
+                    isMomentum = true;
+                    momentumDirection = MomentumDirection.Down;
+                }
+
+                if (isMomentum && _settings.VolumeConfirmationRequired)
                 {
                     var avgVolume = recentCandles.Average(c => c.Volume);
                     if (latestCandle.Volume < avgVolume * _settings.VolumeMultiplier)
                     {
-                        isBreakout = false;
+                        isMomentum = false;
                     }
                 }
 
-                if (isBreakout)
-                    OnBreakoutDetected(_settings.Contract, breakoutDirection, priceToCheck, latestCandle.Timestamp);
+                if (isMomentum)
+                    OnMomentumDetected(_settings.Contract, momentumDirection, priceToCheck, latestCandle.Timestamp);
             }
             catch (Exception ex)
             {
@@ -175,9 +193,10 @@ namespace TradeHorizon.Business.Services.Strategies
             }
         }
 
-        private void OnBreakoutDetected(string contract, BreakoutDirection direction, decimal? price, long timestamp)
+
+        private void OnMomentumDetected(string contract, MomentumDirection direction, decimal? price, long timestamp)
         {
-            BreakoutDetected?.Invoke(contract, direction, price, timestamp);
+            MomentumDetected?.Invoke(contract, direction, price, timestamp);
         }
     }
 }

@@ -117,7 +117,7 @@ public class GateWebSocketClient : IWebSocketClient
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"got error {ex.ToString()}");
+            Console.WriteLine($"Exception: {ex}");
             return null;
         }
     }

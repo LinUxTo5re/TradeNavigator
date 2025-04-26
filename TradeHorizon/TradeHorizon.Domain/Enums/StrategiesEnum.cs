@@ -2,7 +2,8 @@
 public enum BreakoutDirection
 {
     Up,
-    Down
+    Down,
+    Neautral
 }
 
 public enum PriceSource
@@ -11,4 +12,11 @@ public enum PriceSource
     High,
     Low,
     Close
+}
+
+public enum MomentumDirection
+{
+    Up,
+    Down,
+    Neautral
 }

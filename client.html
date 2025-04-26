@@ -15,7 +15,7 @@
 
     <script>
         let connection;
-        const groupName = "BreakoutStrategyGroup"; // must match backend group used in broadcasting
+        const groupName = "MomentumStrategyGroup"; // must match backend group used in broadcasting
 
         function log(message) {
             document.getElementById("log").textContent += message + "\n";
@@ -23,11 +23,11 @@
 
         async function connect() {
             connection = new signalR.HubConnectionBuilder()
-                .withUrl("https://localhost:7001/hub/strategy/breakoutstrategy") // replace port if different
+                .withUrl("https://localhost:7001/hub/strategy/momentumstrategy") // replace port if different
                 .configureLogging(signalR.LogLevel.Information)
                 .build();
 
-            connection.on("ReceiveBreakoutStrategy", message => {
+            connection.on("ReceiveMomentumStrategy", message => {
                 log("Received: " + JSON.stringify(message, null, 2));
             });
             
@@ -49,7 +49,7 @@
                 "PriceSource": "Close",
                 "VolumeConfirmationRequired": true,
                 "VolumeMultiplier": 1.5,
-                "GroupName": "BreakoutStrategyGroup"
+                "GroupName": "MomentumStrategyGroup"
               };              
 
             try {

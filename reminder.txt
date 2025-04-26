@@ -1,0 +1,11 @@
+follow below calls when app start (with defualt values):
+
+- start strategy signalr
+- hit rest api
+- hit ws signalr
+
+follow below calls when app running (if user changes value):
+
+- start strategy signalr (if not running)
+- hit rest api with user values
+- hit ws signalr with user values

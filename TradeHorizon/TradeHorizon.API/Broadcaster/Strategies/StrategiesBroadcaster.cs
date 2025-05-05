@@ -35,4 +35,16 @@ public class StrategiesBroadcaster : IStrategiesBroadcaster
         };
         await _momentumStrategyHubContext.Clients.Group(SignalRConstants.MomentumStrategyGroup).SendAsync(SignalRConstants.ReceiveMomentumStrategy, data);
     }
+
+    public async Task BroadcastReversalStrategyAsync(string contract, MomentumDirection direction, decimal? price, long timestamp)
+    {
+        var data = new Dictionary<string, object>
+        {
+            {"Contract", contract.ToString()},
+            { "Direction", direction.ToString() },
+            { "Price", price ?? 0 },
+            { "Timestamp", timestamp }
+        };
+        await _momentumStrategyHubContext.Clients.Group(SignalRConstants.MomentumStrategyGroup).SendAsync(SignalRConstants.ReceiveMomentumStrategy, data);
+    }
 }

@@ -4,5 +4,6 @@ namespace TradeHorizon.Domain.Interfaces.Strategies
     {
         Task BroadcastBreakoutStrategyAsync(string contract, BreakoutDirection direction, decimal? price, long timestamp);
         Task BroadcastMomentumStrategyAsync(string contract, MomentumDirection direction, decimal? price, long timestamp);
+        Task BroadcastReversalStrategyAsync(string contract, MomentumDirection direction, decimal? price, long timestamp);
     }
 }
